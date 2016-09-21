@@ -1,10 +1,23 @@
+
+//    Copyright © 2011-2016 向小辉. All rights reserved.
 //
-//  GSWebView.m
-//  Web
+//    Permission is hereby granted, free of charge, to any person obtaining a copy
+//    of this software and associated documentation files (the "Software"), to deal
+//    in the Software without restriction, including without limitation the rights
+//    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//    copies of the Software, and to permit persons to whom the Software is
+//    furnished to do so, subject to the following conditions:
 //
-//  Created by xiaohui on 2016/9/18.
-//  Copyright © 2016年 xiaohui. All rights reserved.
+//    The above copyright notice and this permission notice shall be included in
+//    all copies or substantial portions of the Software.
 //
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//    THE SOFTWARE.
 
 #import "GSWebView.h"
 #import <JavaScriptCore/JavaScriptCore.h> 
@@ -33,10 +46,7 @@
 
 /***********************************************************************************************************************************************/
 
-@interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate>
-
-
-@end
+@interface GSWebView () @end
 
 @implementation GSWebView
 {
@@ -83,7 +93,7 @@ static long const GSJSContextKey  = 1000;
 - (void)loadRequest:(NSURLRequest *)request
 {
     _request = request;
-    
+    NSLog(@"%@",[_webView class]);
     if ([_webView isKindOfClass:[WKWebView class]]) {
         [(WKWebView *)_webView loadRequest:request];
     }else{
@@ -168,7 +178,9 @@ static long const GSJSContextKey  = 1000;
      
     if([self.delegate respondsToSelector:@selector(gswebViewNeedInterceptJavaScript)]){
         [[self.delegate gswebViewNeedInterceptJavaScript] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
-            __weak typeof(self) weakSelf = self; 
+            __weak typeof(self) weakSelf = self;
+            
+            NSLog(@"%@ %@",name,[self jsContext]);
             self.jsContext[name] = ^(id body){
                 dispatch_async(dispatch_get_main_queue(), ^{
                     __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -187,6 +199,11 @@ static long const GSJSContextKey  = 1000;
     if ([self.delegate respondsToSelector:@selector(gswebView:didFailLoadWithError:)]) {
         [self.delegate gswebView:(GSWebView *)_webView didFailLoadWithError:error];
     }
+}
+
+- (double)estimatedProgress
+{
+    return ((WKWebView *)_webView).estimatedProgress;
 }
 
 /***********************************************************************************************************************************************/
@@ -215,12 +232,6 @@ static long const GSJSContextKey  = 1000;
         completionHandler(NO);
     }]];
 }
-
-//TODO:网页弹出的输入框未拦截
-//- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler
-//{
-//    
-//}
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
@@ -255,7 +266,7 @@ static long const GSJSContextKey  = 1000;
     if (self.delegate && [self.delegate respondsToSelector:@selector(gswebViewNeedInterceptJavaScript)]) {
         [[self.delegate gswebViewNeedInterceptJavaScript] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
-            [webView.configuration.userContentController addScriptMessageHandler:self name:name];
+            [webView.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)self name:name];
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]){
@@ -273,13 +284,18 @@ static long const GSJSContextKey  = 1000;
 
 /***********************************************************************************************************************************************/
 
-#pragma mark - private methods
-
 - (void)configureWKWebViewWithFrame:(CGRect)frame
 {
     WKWebView * web = [[WKWebView alloc] initWithFrame:frame configuration:[[GSWebViewConfiguration alloc] init]];
-    web.UIDelegate = self;
-    web.navigationDelegate = self;
+    Protocol * GSWKUIDelegate = objc_allocateProtocol("WKUIDelegate");
+    [self registerProtocol:GSWKUIDelegate];
+    Protocol * GSWKNavigationDelegate = objc_allocateProtocol("WKNavigationDelegate");
+    [self registerProtocol:GSWKNavigationDelegate];
+    Protocol * GSWKScriptMessageHandler = objc_allocateProtocol("WKScriptMessageHandler");
+    [self registerProtocol:GSWKScriptMessageHandler];
+    
+    web.UIDelegate = (id<WKUIDelegate>)self;
+    web.navigationDelegate = (id<WKNavigationDelegate>)self;
     web.allowsBackForwardNavigationGestures = YES;
     _scrollView = web.scrollView;
     _webView = web;
@@ -289,15 +305,22 @@ static long const GSJSContextKey  = 1000;
 - (void)configureUIWebViewWithFrame:(CGRect)frame
 {
     UIWebView * web = [[UIWebView alloc] initWithFrame:frame];
-//   Protocol * UIWebViewDelegate = objc_allocateProtocol("UIWebViewDelegate");
-//   objc_registerProtocol(UIWebViewDelegate);
-//   class_addProtocol([GSWebView class], UIWebViewDelegate)?:NSLog(@"动态绑定协议失败");
-    web.delegate = self;
+    Protocol * GSUIWebViewDelegate = objc_allocateProtocol("UIWebViewDelegate");
+    [self registerProtocol:GSUIWebViewDelegate];
+    web.delegate = (id<UIWebViewDelegate>)self;
     _scrollView = web.scrollView;
     _webView = web;
     [self addSubview:_webView];
 }
 
+- (void)registerProtocol:(Protocol *)protocol
+{
+    if (protocol) {
+        objc_registerProtocol(protocol);
+        class_addProtocol([GSWebView class], protocol)?:NSLog(@"动态绑定协议失败");
+    }
+}
+  
 - (UIViewController *)currentViewController{
     UIViewController *result = nil;
     UIWindow * window = [[UIApplication sharedApplication] keyWindow];
@@ -319,32 +342,26 @@ static long const GSJSContextKey  = 1000;
     
     return result;
 }
- 
-@end
-
-
-@implementation GSWebView (ExcuteFunction)
 
 - (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param
 {
     if (self.performer) {
         SEL selector;
-        BOOL isParameter = YES;
-        if ([param isKindOfClass:[NSString class]]) {
-            isParameter = ![param isEqualToString:@""];
-        }
-        if (isParameter && param) {
-            selector = NSSelectorFromString([name stringByAppendingString:@":"]);
-        }else{
+        if ([param isKindOfClass:[NSString class]] && [param isEqualToString:@""])
             selector = NSSelectorFromString(name);
-        }
-        
-        if ([self.performer respondsToSelector:selector]) {
+        else
+            selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+  
+        if ([self.performer respondsToSelector:selector])
+        {
             IMP imp = [self.performer methodForSelector:selector];
-            if (param) {
+            if (param)
+            {
                 void (*func)(id, SEL, id) = (void *)imp;
                 func(self.performer, selector,param);
-            }else{
+            }
+            else
+            {
                 void (*func)(id, SEL) = (void *)imp;
                 func(self.performer, selector);
             }

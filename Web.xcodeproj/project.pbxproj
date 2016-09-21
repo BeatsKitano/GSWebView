@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B233F071D921124005C0ED0 /* GSParentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B233F061D921124005C0ED0 /* GSParentViewController.m */; };
 		4B25A7251D8E23F800E6AB2C /* GSWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B25A7241D8E23F800E6AB2C /* GSWebView.m */; };
 		4B25A7271D8E6C6300E6AB2C /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B25A7261D8E6C6300E6AB2C /* JavaScriptCore.framework */; };
 		4B25A7291D8E6C6800E6AB2C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B25A7281D8E6C6800E6AB2C /* WebKit.framework */; };
@@ -19,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B233F051D921124005C0ED0 /* GSParentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSParentViewController.h; sourceTree = "<group>"; };
+		4B233F061D921124005C0ED0 /* GSParentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSParentViewController.m; sourceTree = "<group>"; };
 		4B25A7231D8E23F800E6AB2C /* GSWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSWebView.h; sourceTree = "<group>"; };
 		4B25A7241D8E23F800E6AB2C /* GSWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GSWebView.m; sourceTree = "<group>"; };
 		4B25A7261D8E6C6300E6AB2C /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -73,6 +76,8 @@
 				4B25A7241D8E23F800E6AB2C /* GSWebView.m */,
 				4BFD38BA1D869C3D00BC700D /* ViewController.h */,
 				4BFD38BB1D869C3D00BC700D /* ViewController.m */,
+				4B233F051D921124005C0ED0 /* GSParentViewController.h */,
+				4B233F061D921124005C0ED0 /* GSParentViewController.m */,
 				4BFD38B41D869C3D00BC700D /* Supporting Files */,
 			);
 			path = Web;
@@ -167,6 +172,7 @@
 				4BFD38BC1D869C3D00BC700D /* ViewController.m in Sources */,
 				4B25A7251D8E23F800E6AB2C /* GSWebView.m in Sources */,
 				4BFD38B91D869C3D00BC700D /* AppDelegate.m in Sources */,
+				4B233F071D921124005C0ED0 /* GSParentViewController.m in Sources */,
 				4BFD38B61D869C3D00BC700D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
