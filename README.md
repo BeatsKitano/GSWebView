@@ -97,8 +97,7 @@
 	} 
  
 ```
- 
- 
+  
 ####4.GSWebView 实现思路
  
  <p> GSWebView内部一个UIView指针，初始化完成后，内部根据不同的系统版本指向WKWebView或者UIWebView，从代码内部看，GSWebView并未遵守任何协议，但初始化时，GSWebView应该遵循的协议都通过Runtime动态绑定。</p>
@@ -106,8 +105,5 @@
  <p>倘若内部由UIWebView实现，那么JS交互的JSContext也是通过Runtime进行属性添加。用到什么添加什么!</p>
   
  <br></br>
-  <small>补充：希望阅读此文的你是干干净净的！</small>
-  <br></br>
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
-
-
+ 
