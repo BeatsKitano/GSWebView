@@ -93,7 +93,6 @@ static long const GSJSContextKey  = 1000;
 - (void)loadRequest:(NSURLRequest *)request
 {
     _request = request;
-    NSLog(@"%@",[_webView class]);
     if ([_webView isKindOfClass:[WKWebView class]]) {
         [(WKWebView *)_webView loadRequest:request];
     }else{
@@ -179,8 +178,6 @@ static long const GSJSContextKey  = 1000;
     if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction)]){
         [[self.delegate gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
             __weak typeof(self) weakSelf = self;
-            
-            NSLog(@"%@ %@",name,[self jsContext]);
             self.jsContext[name] = ^(id body){
                 dispatch_async(dispatch_get_main_queue(), ^{
                     __strong typeof(weakSelf) strongSelf = weakSelf;
