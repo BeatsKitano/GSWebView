@@ -319,13 +319,13 @@ static long const GSJSContextKey  = 1000;
 }
   
 - (UIViewController *)currentViewController{
-    UIViewController *result = nil;
+    UIViewController *vc = nil;
     UIWindow * window = [[UIApplication sharedApplication] keyWindow];
     if (window.windowLevel != UIWindowLevelNormal) {
         NSArray *windows = [[UIApplication sharedApplication] windows];
-        for(UIWindow * tmpWin in windows) {
-            if (tmpWin.windowLevel == UIWindowLevelNormal) {
-                window = tmpWin;
+        for(UIWindow * win in windows) {
+            if (win.windowLevel == UIWindowLevelNormal) {
+                window = win;
                 break;
             }
         }
@@ -333,11 +333,10 @@ static long const GSJSContextKey  = 1000;
     UIView *frontView = [[window subviews] firstObject];
     id nextResponder = [frontView nextResponder];
     if ([nextResponder isKindOfClass:[UIViewController class]])
-        result = nextResponder;
+        vc = nextResponder;
     else
-        result = window.rootViewController;
-    
-    return result;
+        vc = window.rootViewController;
+    return vc;
 }
 
 - (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param
@@ -349,16 +348,13 @@ static long const GSJSContextKey  = 1000;
         else
             selector = NSSelectorFromString([name stringByAppendingString:@":"]);
   
-        if ([self.performer respondsToSelector:selector])
-        {
+        if ([self.performer respondsToSelector:selector]){
             IMP imp = [self.performer methodForSelector:selector];
-            if (param)
-            {
+            if (param){
                 void (*func)(id, SEL, id) = (void *)imp;
                 func(self.performer, selector,param);
             }
-            else
-            {
+            else{
                 void (*func)(id, SEL) = (void *)imp;
                 func(self.performer, selector);
             }
