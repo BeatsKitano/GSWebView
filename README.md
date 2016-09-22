@@ -53,7 +53,7 @@
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error; 
 
- - (NSArray<NSString *>*)gswebViewNeedInterceptJavaScript;
+ - (NSArray<NSString *>*)gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction;
 ```
  
  <p>这里是重点</p>
@@ -68,7 +68,7 @@
   必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
  
  */
-- (NSArray<NSString *>*)gswebViewNeedInterceptJavaScript;
+- (NSArray<NSString *>*)gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction;
  
 ```
 
