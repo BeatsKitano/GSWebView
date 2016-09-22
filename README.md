@@ -71,17 +71,17 @@ JS交互重点
 JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
 
 但是在GSWebView中，必须这样:
-
+```javascript
 	//获取客户端iOS版本
-	var version = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);  
-	version = parseInt(ver[1], 10);  
+var version = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);  
+version = parseInt(ver[1], 10);  
 
-	if(version >= 7.0 && version < 8.0){
-		getConsultationInfo(id);
-	}else if(version>=8.0){
-		window.webkit.messageHandlers.getConsultationInfo.postMessage(id)
-	} 
-
+if(version >= 7.0 && version < 8.0){
+	getConsultationInfo(id);
+}else if(version>=8.0){
+	window.webkit.messageHandlers.getConsultationInfo.postMessage(id)
+} 
+```
 * * *
 #### 4.GSWebView采用装饰模式的实现整合的思路
 * GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。
