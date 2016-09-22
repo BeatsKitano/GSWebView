@@ -24,12 +24,12 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 ###### 使用介绍
 
 指定初始化构造方法
-```
+```objective-c
 - (instancetype)initWithFrame:(CGRect)frame delegate:(nonnull id<GSWebViewDelegate>)delegate JSPerformer:(nonnull id)performer; 
 ```
 
 同UIWebView属性
-```
+```objective-c
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
 @property (nonatomic, readonly) BOOL canGoBack;
 @property (nonatomic, readonly) BOOL canGoForward; 
@@ -41,7 +41,7 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 ```
 
 形神皆似的协议方法
-```
+```objective-c
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType;
 - (void)gswebViewDidStartLoad:(GSWebView *)webView;
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
@@ -52,7 +52,7 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 ```
 
 JS交互重点
-```
+```objective-c
 /**
   JS调用OC方法
   网页中的Script标签中有此JS方法名称，但未具体实现，将参数传给Objective-C,OC将获取到的参数做下一步处理
