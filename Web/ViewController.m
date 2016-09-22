@@ -46,7 +46,7 @@ _Pragma("clang diagnostic pop") \
 }
  
 
-- (NSArray <NSString *>*)gswebViewNeedInterceptJavaScript
+- (NSArray <NSString *>*)gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction
 {
     return @[@"getConsultationInfo"];
 }

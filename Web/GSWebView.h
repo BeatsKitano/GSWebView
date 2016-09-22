@@ -62,7 +62,6 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 /**
   指定构造方法
- 
  */
 - (instancetype)initWithFrame:(CGRect)frame delegate:(nonnull id<GSWebViewDelegate>)delegate JSPerformer:(nonnull id)performer;
 
@@ -102,7 +101,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
   必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
  
  */
-- (NSArray<NSString *>*)gswebViewNeedInterceptJavaScript;
+- (NSArray<NSString *>*)gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction;
 
 @end
   
