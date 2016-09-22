@@ -82,6 +82,12 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (void)goBack;
 - (void)goForward;
 
+/**
+ *  此方法的调用建议写在“application:didFinishLaunchingWithOptions:”中
+ *  App启动时移除掉所有缓存
+ */
++ (void)removeAllGSWebViewCache;
+
 @end
 
 
@@ -100,8 +106,9 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  
   必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
  
+  返回一个从保存OC方法名册数组
  */
-- (NSArray<NSString *>*)gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction;
+- (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 
 @end
   

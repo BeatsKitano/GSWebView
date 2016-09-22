@@ -146,7 +146,12 @@ static long const GSJSContextKey  = 1000;
 {
     [self excuteFuncWithName:@"goForward"];
 }
-  
+
++ (void)removeAllGSWebViewCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
 /***********************************************************************************************************************************************/
 
 #pragma mark - __IPHONE_7_0 --> UIWebViewDelegate
@@ -175,8 +180,8 @@ static long const GSJSContextKey  = 1000;
     
     _title = [(UIWebView *)_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
      
-    if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction)]){
-        [[self.delegate gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+    if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
+        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
             __weak typeof(self) weakSelf = self;
             self.jsContext[name] = ^(id body){
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -260,8 +265,8 @@ static long const GSJSContextKey  = 1000;
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     _title = webView.title; 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction)]) {
-        [[self.delegate gswebViewRegisterObjctiveCMethodsForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
+        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
             [webView.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)self name:name];
         }];
