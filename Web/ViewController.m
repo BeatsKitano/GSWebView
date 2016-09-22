@@ -52,9 +52,7 @@ _Pragma("clang diagnostic pop") \
 }
 
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType
-{
-    NSLog(@"%@",request.URL.absoluteString);
-    
+{  
     return YES;
 }
 
