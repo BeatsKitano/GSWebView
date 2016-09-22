@@ -356,12 +356,14 @@ static long const GSJSContextKey  = 1000;
         if ([self.performer respondsToSelector:selector]){
             IMP imp = [self.performer methodForSelector:selector];
             if (param){
-                void (*func)(id, SEL, id) = (void *)imp;
-                func(self.performer, selector,param);
+                typedef void (*func)(id, SEL, id);
+                func f = (void *)imp;
+                f(self.performer, selector,param);
             }
             else{
-                void (*func)(id, SEL) = (void *)imp;
-                func(self.performer, selector);
+                typedef void (*func)(id, SEL);
+                func f = (void *)imp;
+                f(self.performer, selector);
             }
         }
     }
