@@ -187,9 +187,9 @@ static NSString * const kDocumentTitle = @"document.title";
     objc_setAssociatedObject(self,&kGSJSContextKey, JSCtx, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
+        __weak typeof(self) weakSelf = self;
         [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
-            __weak typeof(self) weakSelf = self;
             self.jsContext[name] = ^(id body){
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (weakSelf) return ;
