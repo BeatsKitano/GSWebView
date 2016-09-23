@@ -62,17 +62,17 @@
 #pragma clang diagnostic pop 
 }
 
-static long const GSJSValueKey    = 1100;
-static long const GSJSContextKey  = 1000;
+static long const kGSJSValueKey    = 1100;
+static long const kGSJSContextKey  = 1000;
 
 - (JSContext *)jsContext
 {
-    return objc_getAssociatedObject(self, &GSJSContextKey);
+    return objc_getAssociatedObject(self, &kGSJSContextKey);
 }
 
 - (JSValue *)jsValue
 {
-    return objc_getAssociatedObject(self, &GSJSValueKey);
+    return objc_getAssociatedObject(self, &kGSJSValueKey);
 }
 
 - (instancetype)initWithFrame:(CGRect)frame delegate:(id<GSWebViewDelegate>)delegate JSPerformer:(id)performer
@@ -122,29 +122,32 @@ static long const GSJSContextKey  = 1000;
     }
 }
 
+#define ExcuteMethodWith(name) \
+    [self excuteFuncWithName:name]
+
 - (BOOL)isLoading
 {
-    return (BOOL)[self excuteFuncWithName:@"isLoading"];
+    return (BOOL)ExcuteMethodWith(@"isLoading");
 }
 
 - (void)reload
 {
-    [self excuteFuncWithName:@"reload"];
+    ExcuteMethodWith(@"reload");
 }
 
 - (void)stopLoading
 {
-    [self excuteFuncWithName:@"stopLoading"];
+    ExcuteMethodWith(@"stopLoading");
 }
 
 - (void)goBack
 {
-    [self excuteFuncWithName:@"goBack"];
+    ExcuteMethodWith(@"goBack");
 }
 
 - (void)goForward
 {
-    [self excuteFuncWithName:@"goForward"];
+    ExcuteMethodWith(@"goForward");
 }
 
 + (void)removeAllGSWebViewCache
@@ -171,20 +174,25 @@ static long const GSJSContextKey  = 1000;
     }
 }
 
+static NSString * const kJavaScriptContext = @"documentView.webView.mainFrame.javaScriptContext";
+static NSString * const kDocumentTitle = @"document.title";
+
 - (void)webViewDidFinishLoad:(UIWebView *)webView;
 {
-    JSContext * JSCtx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    JSValue * JSVlu = [JSCtx globalObject];
-    objc_setAssociatedObject(self, &GSJSValueKey, JSVlu, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(self,&GSJSContextKey, JSCtx, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    _title = [(UIWebView *)_webView stringByEvaluatingJavaScriptFromString:kDocumentTitle];
     
-    _title = [(UIWebView *)_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-     
+    JSContext * JSCtx = [webView valueForKeyPath:kJavaScriptContext];
+    JSValue * JSVlu = [JSCtx globalObject];
+    objc_setAssociatedObject(self, &kGSJSValueKey, JSVlu, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self,&kGSJSContextKey, JSCtx, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
     if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
-        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
+         ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
             __weak typeof(self) weakSelf = self;
             self.jsContext[name] = ^(id body){
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    if (weakSelf) return ;
                     __strong typeof(weakSelf) strongSelf = weakSelf;
                     [strongSelf excuteJavaScriptFunctionWithName:name parameter:body];
                 });
@@ -216,8 +224,12 @@ static long const GSJSContextKey  = 1000;
 {
     UIViewController * currentVC = [self currentViewController];
     if (currentVC) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * _Nonnull action) {
             completionHandler();
         }]];
         [currentVC presentViewController:alert animated:YES completion:NULL];
@@ -226,8 +238,12 @@ static long const GSJSContextKey  = 1000;
 
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customConfirmTitle message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customConfirmTitle
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定"
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * _Nonnull action) {
         completionHandler(YES);
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -266,9 +282,13 @@ static long const GSJSContextKey  = 1000;
 {
     _title = webView.title; 
     if (self.delegate && [self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
-        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+        __weak typeof(self) weakSelf = self;
+        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
+         ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+             if (weakSelf) return ;
+             __strong typeof(weakSelf) strongSelf = weakSelf;
             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
-            [webView.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)self name:name];
+            [webView.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)strongSelf name:name];
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]){
@@ -284,7 +304,7 @@ static long const GSJSContextKey  = 1000;
     [self excuteJavaScriptFunctionWithName:message.name parameter:message.body];
 }
 
-/***********************************************************************************************************************************************/
+#pragma mark -
 
 - (void)configureWKWebViewWithFrame:(CGRect)frame
 {

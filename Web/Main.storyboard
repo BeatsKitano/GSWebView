@@ -25,11 +25,7 @@
                     <navigationItem key="navigationItem" id="DXN-T3-YkT"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMy-xn-Mxf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="g2S-pk-1kI">
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="show" id="lbA-1Z-gsm"/>
-                    </connections>
-                </tapGestureRecognizer>
+                <tapGestureRecognizer id="g2S-pk-1kI"/>
             </objects>
             <point key="canvasLocation" x="-163" y="168"/>
         </scene>
@@ -65,7 +61,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="529" y="168"/>
+            <point key="canvasLocation" x="911" y="194"/>
         </scene>
     </scenes>
 </document>

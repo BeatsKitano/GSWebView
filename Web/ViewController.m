@@ -38,7 +38,8 @@ _Pragma("clang diagnostic pop") \
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-  
+    NSLog(@"ViewController viewDidLoad  成功");
+    
     NSURLRequest * req = [NSURLRequest requestWithURL:[NSURL URLWithString:ADDRESS]];
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds delegate:self JSPerformer:self];
     [self.view addSubview:_webView];
