@@ -84,19 +84,7 @@ if(version >= 7.0 && version < 8.0){
 ```
 * * *
 #### 4.GSWebView采用装饰模式的实现整合的思路
-* GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。
-* GSWebView源码显式并未遵守任何协议，但初始化时，GSWebView应该遵循的协议都通过Runtime动态绑定。
-
-```objective-c
-	- (void)registerProtocol:(Protocol *)protocol
-	{
-		if (protocol){
-			objc_registerProtocol(protocol);
-			class_addProtocol([GSWebView class], protocol)?:NSLog(@"动态绑定协议失败");
-		}
-	}
-```
-这样的好处在于，当内部由UIWebView实现时，其实并不需要遵守WKwebView的协议，只取所需。
+* GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。 
 * 关于回调，除去UI方面的进度回调通过GSWebViewDelegate协议，在GSWebView中注册需要的JS调用的OC方法，都通过一个指向函数的指针实现回调，且回调线程为主线程。
 * OC调用JS的回调则在一个block中完成，且回调线程为主线程。
 
