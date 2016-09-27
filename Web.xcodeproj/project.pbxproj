@@ -12,12 +12,23 @@
 		4B25A7271D8E6C6300E6AB2C /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B25A7261D8E6C6300E6AB2C /* JavaScriptCore.framework */; };
 		4B25A7291D8E6C6800E6AB2C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B25A7281D8E6C6800E6AB2C /* WebKit.framework */; };
 		4B6F2BF01D94D8FD00310943 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B6F2BEF1D94D8FD00310943 /* Main.storyboard */; };
+		4B8CDA611D9A00BC009EBD1B /* WebUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8CDA601D9A00BC009EBD1B /* WebUITests.m */; };
 		4BFD38B61D869C3D00BC700D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD38B51D869C3D00BC700D /* main.m */; };
 		4BFD38B91D869C3D00BC700D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD38B81D869C3D00BC700D /* AppDelegate.m */; };
 		4BFD38BC1D869C3D00BC700D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFD38BB1D869C3D00BC700D /* ViewController.m */; };
 		4BFD38C11D869C3D00BC700D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BFD38C01D869C3D00BC700D /* Assets.xcassets */; };
 		4BFD38C41D869C3D00BC700D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BFD38C21D869C3D00BC700D /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4B8CDA631D9A00BC009EBD1B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BFD38A91D869C3D00BC700D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4BFD38B01D869C3D00BC700D;
+			remoteInfo = Web;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4B233F051D921124005C0ED0 /* GSParentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GSParentViewController.h; sourceTree = "<group>"; };
@@ -27,6 +38,9 @@
 		4B25A7261D8E6C6300E6AB2C /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		4B25A7281D8E6C6800E6AB2C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		4B6F2BEF1D94D8FD00310943 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		4B8CDA5E1D9A00BC009EBD1B /* WebUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B8CDA601D9A00BC009EBD1B /* WebUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebUITests.m; sourceTree = "<group>"; };
+		4B8CDA621D9A00BC009EBD1B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BFD38B11D869C3D00BC700D /* Web.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Web.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BFD38B51D869C3D00BC700D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4BFD38B71D869C3D00BC700D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -39,6 +53,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4B8CDA5B1D9A00BC009EBD1B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BFD38AE1D869C3D00BC700D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,12 +72,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B8CDA5F1D9A00BC009EBD1B /* WebUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4B8CDA601D9A00BC009EBD1B /* WebUITests.m */,
+				4B8CDA621D9A00BC009EBD1B /* Info.plist */,
+			);
+			path = WebUITests;
+			sourceTree = "<group>";
+		};
 		4BFD38A81D869C3D00BC700D = {
 			isa = PBXGroup;
 			children = (
 				4B25A7281D8E6C6800E6AB2C /* WebKit.framework */,
 				4B25A7261D8E6C6300E6AB2C /* JavaScriptCore.framework */,
 				4BFD38B31D869C3D00BC700D /* Web */,
+				4B8CDA5F1D9A00BC009EBD1B /* WebUITests */,
 				4BFD38B21D869C3D00BC700D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				4BFD38B11D869C3D00BC700D /* Web.app */,
+				4B8CDA5E1D9A00BC009EBD1B /* WebUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +132,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4B8CDA5D1D9A00BC009EBD1B /* WebUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4B8CDA671D9A00BC009EBD1B /* Build configuration list for PBXNativeTarget "WebUITests" */;
+			buildPhases = (
+				4B8CDA5A1D9A00BC009EBD1B /* Sources */,
+				4B8CDA5B1D9A00BC009EBD1B /* Frameworks */,
+				4B8CDA5C1D9A00BC009EBD1B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4B8CDA641D9A00BC009EBD1B /* PBXTargetDependency */,
+			);
+			name = WebUITests;
+			productName = WebUITests;
+			productReference = 4B8CDA5E1D9A00BC009EBD1B /* WebUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		4BFD38B01D869C3D00BC700D /* Web */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4BFD38C81D869C3D00BC700D /* Build configuration list for PBXNativeTarget "Web" */;
@@ -127,9 +177,15 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = xiaohui;
 				TargetAttributes = {
+					4B8CDA5D1D9A00BC009EBD1B = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = 2VZNLBR87Y;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 4BFD38B01D869C3D00BC700D;
+					};
 					4BFD38B01D869C3D00BC700D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 2VZNLBR87Y;
+						DevelopmentTeam = E7HPM4L27W;
 					};
 				};
 			};
@@ -147,11 +203,19 @@
 			projectRoot = "";
 			targets = (
 				4BFD38B01D869C3D00BC700D /* Web */,
+				4B8CDA5D1D9A00BC009EBD1B /* WebUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4B8CDA5C1D9A00BC009EBD1B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BFD38AF1D869C3D00BC700D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -165,6 +229,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4B8CDA5A1D9A00BC009EBD1B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B8CDA611D9A00BC009EBD1B /* WebUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4BFD38AD1D869C3D00BC700D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -179,6 +251,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4B8CDA641D9A00BC009EBD1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4BFD38B01D869C3D00BC700D /* Web */;
+			targetProxy = 4B8CDA631D9A00BC009EBD1B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		4BFD38C21D869C3D00BC700D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -191,6 +271,38 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4B8CDA651D9A00BC009EBD1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = 2VZNLBR87Y;
+				INFOPLIST_FILE = WebUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "----Free.WebUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Web;
+			};
+			name = Debug;
+		};
+		4B8CDA661D9A00BC009EBD1B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = 2VZNLBR87Y;
+				INFOPLIST_FILE = WebUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "----Free.WebUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Web;
+			};
+			name = Release;
+		};
 		4BFD38C61D869C3D00BC700D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -304,6 +416,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4B8CDA671D9A00BC009EBD1B /* Build configuration list for PBXNativeTarget "WebUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B8CDA651D9A00BC009EBD1B /* Debug */,
+				4B8CDA661D9A00BC009EBD1B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		4BFD38AC1D869C3D00BC700D /* Build configuration list for PBXProject "Web" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

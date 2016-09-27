@@ -48,16 +48,8 @@ _Pragma("clang diagnostic pop") \
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
     
-    NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
-   [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-    
 }
-
-- (void)timerAction
-{
-    NSLog(@"ooooo");
-}
-
+ 
 //跳转交互
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {

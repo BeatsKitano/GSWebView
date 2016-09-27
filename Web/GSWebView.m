@@ -46,7 +46,9 @@
 
 /***********************************************************************************************************************************************/
 
-@interface GSWebView () @end
+@interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate>
+
+@end
 
 @implementation GSWebView
 {
@@ -204,7 +206,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     _title = [(UIWebView *)_webView stringByEvaluatingJavaScriptFromString:kDocumentTitle];
 }
 
-- (void)bidingCtxAndValue
+- (void)bindingCtxAndValue
 {
     JSContext * JSCtx = [(UIWebView *)_webView valueForKeyPath:kJavaScriptContext];
     JSValue * JSVlu = [JSCtx globalObject];
@@ -215,7 +217,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 - (void)webViewDidFinishLoad:(UIWebView *)webView;
 {
     [self generateTitle];
-    [self bidingCtxAndValue];
+    [self bindingCtxAndValue];
     [self cleanWebCacheValues];
     
     if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
@@ -341,15 +343,8 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 - (void)configureWKWebViewWithFrame:(CGRect)frame
 {
     WKWebView * web = [[WKWebView alloc] initWithFrame:frame configuration:[[GSWebViewConfiguration alloc] init]];
-    Protocol * GSWKUIDelegate = objc_allocateProtocol("WKUIDelegate");
-    [self registerProtocol:GSWKUIDelegate];
-    Protocol * GSWKNavigationDelegate = objc_allocateProtocol("WKNavigationDelegate");
-    [self registerProtocol:GSWKNavigationDelegate];
-    Protocol * GSWKScriptMessageHandler = objc_allocateProtocol("WKScriptMessageHandler");
-    [self registerProtocol:GSWKScriptMessageHandler];
-    
-    web.UIDelegate = (id<WKUIDelegate>)self;
-    web.navigationDelegate = (id<WKNavigationDelegate>)self;
+    web.UIDelegate = self;
+    web.navigationDelegate = self;
     web.allowsBackForwardNavigationGestures = YES;
     _scrollView = web.scrollView;
     _webView = web;
@@ -363,22 +358,12 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 #pragma clang diagnostic ignored"-Wundeclared-selector"
     [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 #pragma clang diagnostic pop
-     Protocol * GSUIWebViewDelegate = objc_allocateProtocol("UIWebViewDelegate");
-    [self registerProtocol:GSUIWebViewDelegate];
-    web.delegate = (id<UIWebViewDelegate>)self;
+    web.delegate = self;
     _scrollView = web.scrollView;
     _webView = web;
     [self addSubview:_webView];
 }
 
-- (void)registerProtocol:(Protocol *)protocol
-{
-    if (protocol) {
-        objc_registerProtocol(protocol);
-        class_addProtocol([GSWebView class], protocol)?:NSLog(@"动态绑定协议失败");
-    }
-}
-  
 - (UIViewController *)currentViewController{
     UIViewController *vc = nil;
     UIWindow * window = [[UIApplication sharedApplication] keyWindow];
