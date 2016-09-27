@@ -65,7 +65,7 @@ JS交互重点
 #### 3.JavaScript源码必须做出的改动！
 * WKWebView的JS交互，最不惹人注目但最为关键的地方在于此。
 * 在UIWebView的时代，想要JS交互，JS代码不需要做出改动，但是在WKWebView时代，JS需要根据客户端版本号调用不同的方法与与客户端进行交互。
-官方文档里这句话，哎,就是要JS通过'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行信息传递。
+官方文档里这句话'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行数据传递。
 > Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.\<name\>.postMessage(\<messageBody\>) for all frames.
 举例说明：
 JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
