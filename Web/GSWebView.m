@@ -327,7 +327,6 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
              if (!weakSelf) return ;
              __strong typeof(weakSelf) strongSelf = weakSelf;
             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
-             
             [webView.configuration.userContentController addScriptMessageHandler:strongSelf name:name];
         }];
     }
