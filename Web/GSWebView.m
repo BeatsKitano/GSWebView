@@ -54,6 +54,16 @@
     UIView * _webView;
 }
 
+- (void)dealloc
+{
+    if ([_webView isKindOfClass:[UIWebView class]]) {
+        ((UIWebView *)_webView).delegate = nil;
+        [((UIWebView *)_webView) loadHTMLString:@"" baseURL:nil];
+        [((UIWebView *)_webView) stopLoading];
+        [_webView removeFromSuperview];
+    }
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
 #pragma clang diagnostic push
@@ -177,14 +187,36 @@ static long const kGSJSContextKey  = 1000;
 static NSString * const kJavaScriptContext = @"documentView.webView.mainFrame.javaScriptContext";
 static NSString * const kDocumentTitle = @"document.title";
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView;
+static NSString * const kWebKitCacheModelPreferenceKey = @"WebKitCacheModelPreferenceKey";
+static NSString * const kWebKitDiskImageCacheEnabled = @"WebKitDiskImageCacheEnabled";
+static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOfflineWebApplicationCacheEnabled";
+
+- (void)cleanWebCacheValues
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kWebKitCacheModelPreferenceKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kWebKitDiskImageCacheEnabled];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kWebKitOfflineWebApplicationCacheEnabled];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)generateTitle
 {
     _title = [(UIWebView *)_webView stringByEvaluatingJavaScriptFromString:kDocumentTitle];
-    
-    JSContext * JSCtx = [webView valueForKeyPath:kJavaScriptContext];
+}
+
+- (void)bidingCtxAndValue
+{
+    JSContext * JSCtx = [(UIWebView *)_webView valueForKeyPath:kJavaScriptContext];
     JSValue * JSVlu = [JSCtx globalObject];
     objc_setAssociatedObject(self, &kGSJSValueKey, JSVlu, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self,&kGSJSContextKey, JSCtx, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView;
+{
+    [self generateTitle];
+    [self bidingCtxAndValue];
+    [self cleanWebCacheValues];
     
     if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
         __weak typeof(self) weakSelf = self;
@@ -327,7 +359,11 @@ static NSString * const kDocumentTitle = @"document.title";
 - (void)configureUIWebViewWithFrame:(CGRect)frame
 {
     UIWebView * web = [[UIWebView alloc] initWithFrame:frame];
-    Protocol * GSUIWebViewDelegate = objc_allocateProtocol("UIWebViewDelegate");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored"-Wundeclared-selector"
+    [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
+#pragma clang diagnostic pop
+     Protocol * GSUIWebViewDelegate = objc_allocateProtocol("UIWebViewDelegate");
     [self registerProtocol:GSUIWebViewDelegate];
     web.delegate = (id<UIWebViewDelegate>)self;
     _scrollView = web.scrollView;

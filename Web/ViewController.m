@@ -27,6 +27,9 @@ _Pragma("clang diagnostic pop") \
 @end
 
 @implementation ViewController
+{
+    dispatch_source_t timer;
+}
 
 #define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131812"
   
@@ -44,8 +47,17 @@ _Pragma("clang diagnostic pop") \
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds delegate:self JSPerformer:self];
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
+    
+    NSTimer * timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
+   [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+    
 }
- 
+
+- (void)timerAction
+{
+    NSLog(@"ooooo");
+}
+
 //跳转交互
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {
