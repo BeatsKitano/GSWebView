@@ -65,7 +65,7 @@ JS交互重点
 #### 3.JavaScript源码必须做出的改动！
 * WKWebView的JS交互，最不惹人注目但最为关键的地方在于此。
 * 在UIWebView的时代，想要JS交互，JS代码不需要做出改动，但是在WKWebView时代，JS需要根据客户端版本号调用不同的方法与与客户端进行交互。
-官方文档里这句话，哎,就是要JS通过'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行信息传递。
+官方文档里这句话'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行数据传递。
 > Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.\<name\>.postMessage(\<messageBody\>) for all frames.
 举例说明：
 JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
@@ -84,19 +84,7 @@ if(version >= 7.0 && version < 8.0){
 ```
 * * *
 #### 4.GSWebView采用装饰模式的实现整合的思路
-* GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。
-* GSWebView源码显式并未遵守任何协议，但初始化时，GSWebView应该遵循的协议都通过Runtime动态绑定。
-
-```objective-c
-	- (void)registerProtocol:(Protocol *)protocol
-	{
-		if (protocol){
-			objc_registerProtocol(protocol);
-			class_addProtocol([GSWebView class], protocol)?:NSLog(@"动态绑定协议失败");
-		}
-	}
-```
-这样的好处在于，当内部由UIWebView实现时，其实并不需要遵守WKwebView的协议，只取所需。
+* GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。 
 * 关于回调，除去UI方面的进度回调通过GSWebViewDelegate协议，在GSWebView中注册需要的JS调用的OC方法，都通过一个指向函数的指针实现回调，且回调线程为主线程。
 * OC调用JS的回调则在一个block中完成，且回调线程为主线程。
 
