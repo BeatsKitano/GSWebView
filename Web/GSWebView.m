@@ -258,12 +258,8 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 {
     UIViewController * currentVC = [self currentViewController];
     if (currentVC) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle
-                                                                       message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定"
-                                                  style:UIAlertActionStyleDefault
-                                                handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             completionHandler();
         }]];
         [currentVC presentViewController:alert animated:YES completion:NULL];
@@ -272,12 +268,8 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customConfirmTitle
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定"
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customConfirmTitle message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         completionHandler(YES);
     }]];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -311,12 +303,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         [self.delegate gswebView:(GSWebView *)_webView didFailLoadWithError:error];
     }
 }
-
-- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
-{
-    NSLog(@"请求提交");
-}
-
+  
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     _title = webView.title; 

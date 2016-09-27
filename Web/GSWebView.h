@@ -44,13 +44,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 @property (nullable, nonatomic, copy) NSString * customAlertTitle;    //当拦截到JS中的alter方法，自定义弹出框的标题
 @property (nullable, nonatomic, copy) NSString * customConfirmTitle;  //当拦截到JS中的confirm方法，自定义弹出框的标题
-
-/**
- *  8.0才支持获取进度
- *
- *  8.0之下版本可以根据回调模拟虚假进度
- */
-@property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0);
+@property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0);//,8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
 
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
 @property (nonatomic, readonly) BOOL canGoBack;
