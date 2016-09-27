@@ -36,7 +36,7 @@
         self.userContentController = [[WKUserContentController alloc] init];
         self.allowsInlineMediaPlayback = YES;
         self.preferences.minimumFontSize = 10;
-        self.processPool = [[WKProcessPool alloc]init];
+        self.processPool = [[WKProcessPool alloc]init]; 
         self.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     }
     return self;
@@ -53,7 +53,7 @@
 @implementation GSWebView
 {
     NSPointerArray * _pointers;
-    UIView * _webView;
+    __strong UIView * _webView;
 }
 
 - (void)dealloc
@@ -312,6 +312,11 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     }
 }
 
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
+{
+    NSLog(@"请求提交");
+}
+
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     _title = webView.title; 
@@ -319,10 +324,11 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         __weak typeof(self) weakSelf = self;
         [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
-             if (weakSelf) return ;
+             if (!weakSelf) return ;
              __strong typeof(weakSelf) strongSelf = weakSelf;
             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
-            [webView.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)strongSelf name:name];
+             
+            [webView.configuration.userContentController addScriptMessageHandler:strongSelf name:name];
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]){

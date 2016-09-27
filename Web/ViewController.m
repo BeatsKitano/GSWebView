@@ -47,10 +47,9 @@ _Pragma("clang diagnostic pop") \
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds delegate:self JSPerformer:self];
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
-    
 }
  
-//跳转交互
+//跳转交互                gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {
     return @[@"getConsultationInfo"];
@@ -68,11 +67,11 @@ _Pragma("clang diagnostic pop") \
 
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView
 {
-    NSLog(@"加载成功");
-    NSString * script = [NSString stringWithFormat:@"getCurrentUserId('131812')"];
-    NSLog(@"%@",script);
-    [_webView excuteJavaScript:script completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) { 
-    }];
+//    NSLog(@"加载成功");
+//    NSString * script = @"getCurrentUserId('131812')";
+//    [_webView excuteJavaScript:script completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) {
+//        NSLog(@"%@",error);
+//    }];
 }
 
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error
