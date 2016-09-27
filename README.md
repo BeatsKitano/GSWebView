@@ -87,7 +87,7 @@ if(version >= 7.0 && version < 8.0){
 * GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。 
 * 关于回调，除去UI方面的进度回调通过GSWebViewDelegate协议，在GSWebView中注册需要的JS调用的OC方法，都通过一个指向函数的指针实现回调，且回调线程为主线程。
 * OC调用JS的回调则在一个block中完成，且回调线程为主线程。
+* iOS8系统以下内存泄漏优化。UIWebView的内存泄漏问题至今没有很好的解决方案。
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
 * * *
-
