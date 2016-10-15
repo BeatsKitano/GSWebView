@@ -48,6 +48,9 @@
 
 @interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate>
 
+@property (nonatomic) BOOL canGoBack;
+@property (nonatomic) BOOL canGoForward;
+
 @end
 
 @implementation GSWebView
@@ -160,6 +163,16 @@ static long const kGSJSContextKey  = 1000;
 - (void)goForward
 {
     ExcuteMethodWith(@"goForward");
+}
+
+- (BOOL)canGoBack
+{
+    return (BOOL)ExcuteMethodWith(@"canGoBack");
+}
+
+- (BOOL)canGoForward
+{
+    return (BOOL)ExcuteMethodWith(@"canGoForward");
 }
 
 + (void)removeAllGSWebViewCache

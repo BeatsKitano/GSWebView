@@ -51,7 +51,7 @@ _Pragma("clang diagnostic pop") \
  
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {
-    return @[@"getConsultationInfo"];
+    return @[@"getConsultationInfo",@"ttttt"];
 }
 
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType
@@ -76,6 +76,11 @@ _Pragma("clang diagnostic pop") \
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error
 {
     NSLog(@"加载失败:%@",error);
+}
+
+- (void)ttttt:(NSString *)str
+{
+    NSLog(@"出错了");
 }
 
 - (void)getConsultationInfo:(NSString *)str
