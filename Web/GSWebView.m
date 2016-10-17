@@ -142,7 +142,9 @@ static long const kGSJSContextKey  = 1000;
 
 - (BOOL)isLoading
 {
-    return (BOOL)ExcuteMethodWith(@"isLoading");
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) isLoading];
+    return [((WKWebView *)_webView) isLoading];
 }
 
 - (void)reload
@@ -167,20 +169,24 @@ static long const kGSJSContextKey  = 1000;
 
 - (BOOL)canGoBack
 {
-    return (BOOL)ExcuteMethodWith(@"canGoBack");
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) canGoBack];
+    return [((WKWebView *)_webView) canGoBack];
 }
 
 - (BOOL)canGoForward
 {
-    return (BOOL)ExcuteMethodWith(@"canGoForward");
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) canGoForward];
+    return [((WKWebView *)_webView) canGoForward];
 }
 
 + (void)removeAllGSWebViewCache
 {
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
-
-/***********************************************************************************************************************************************/
+ 
+/***********************************************************************************************************************************/
 
 #pragma mark - __IPHONE_7_0 --> UIWebViewDelegate
 
@@ -390,6 +396,9 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     return vc;
 }
 
+typedef void (*pFunction)(id, SEL, id);
+typedef void (*pFunc)(id, SEL);
+
 - (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param
 {
     if (self.performer) {
@@ -402,8 +411,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         if ([self.performer respondsToSelector:selector]){
             IMP imp = [self.performer methodForSelector:selector];
             if (param){
-                typedef void (*func)(id, SEL, id);
-                func f = (void *)imp;
+                pFunction f = (void *)imp;
                 f(self.performer, selector,param);
             }
             else{
@@ -415,15 +423,16 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     }
 }
  
-- (id)excuteFuncWithName:(NSString *)name
+- (void)excuteFuncWithName:(NSString *)name
 {
     SEL selector = NSSelectorFromString(name);
     if ([_webView respondsToSelector:selector]) {
-        IMP imp = [_webView methodForSelector:selector];
-        id (*func)(id, SEL) = (void *)imp;
-        return (id)func(_webView, selector);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            IMP imp = [_webView methodForSelector:selector];
+            pFunc pfunc = (void *)imp;
+            pfunc(_webView, selector);
+        });
     }
-    return nil;
 }
 
 @end

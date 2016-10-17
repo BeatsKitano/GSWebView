@@ -47,9 +47,9 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 @property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0);//,8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
 
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
-@property (nonatomic, readonly) BOOL canGoBack;
-@property (nonatomic, readonly) BOOL canGoForward;
-@property (nonatomic, readonly, getter = isLoading) BOOL loading;
+@property (nonatomic, readonly, getter=canGoBack) BOOL canGoBack;
+@property (nonatomic, readonly, getter=canGoForward) BOOL canGoForward;
+@property (nonatomic, readonly, getter=isLoading) BOOL loading;
 
 - (instancetype)new __IOS_PROHIBITED;
 - (instancetype)init __IOS_PROHIBITED;

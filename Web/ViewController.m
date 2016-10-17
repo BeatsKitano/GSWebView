@@ -31,7 +31,7 @@ _Pragma("clang diagnostic pop") \
     dispatch_source_t timer;
 }
 
-#define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131812"
+#define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131813"
   
 - (void)dealloc
 {
@@ -44,6 +44,7 @@ _Pragma("clang diagnostic pop") \
     NSLog(@"ViewController viewDidLoad  成功");
     
     NSURLRequest * req = [NSURLRequest requestWithURL:[NSURL URLWithString:ADDRESS]];
+    NSLog(@"%@",req.URL.absoluteString);
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds delegate:self JSPerformer:self];
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
@@ -66,11 +67,8 @@ _Pragma("clang diagnostic pop") \
 
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView
 {
-//    NSLog(@"加载成功");
-//    NSString * script = @"getCurrentUserId('131812')";
-//    [_webView excuteJavaScript:script completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) {
-//        NSLog(@"%@",error);
-//    }];
+    NSLog(@"加载成功");
+     
 }
 
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error
@@ -86,11 +84,12 @@ _Pragma("clang diagnostic pop") \
 - (void)getConsultationInfo:(NSString *)str
 {
     NSLog(@"JS传来参数:%@",str);
+   
     
-    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"http://t1.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131812",str]];
+    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"http://t1.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131813",str]];
     NSURLRequest * req = [NSURLRequest requestWithURL:url]; 
     [_webView loadRequest:req];
+    
 }
-
-
+ 
 @end
