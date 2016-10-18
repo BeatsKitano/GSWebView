@@ -25,7 +25,7 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 
 指定初始化构造方法
 ```objective-c
-- (instancetype)initWithFrame:(CGRect)frame delegate:(nonnull id<GSWebViewDelegate>)delegate JSPerformer:(nonnull id)performer; 
+- (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer; 
 ```
 
 同UIWebView属性
