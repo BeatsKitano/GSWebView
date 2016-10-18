@@ -32,12 +32,13 @@ typedef NS_ENUM(NSInteger,GSWebViewNavigationType) {
     GSWebViewNavigationTypeOther
 };
 
-@protocol GSWebViewDelegate;
+@protocol GSWebViewDelegate,GSWebViewJavaScript;
 
 NS_CLASS_AVAILABLE(10_10, 7_0)
 @interface GSWebView : UIView
 
 @property (nonatomic, weak) id<GSWebViewDelegate> delegate;
+@property (nonatomic, weak) id<GSWebViewJavaScript> script;
 
 @property (nullable, nonatomic, readonly, strong) NSURLRequest *request;
 @property (nullable, nonatomic, readonly, copy) NSString * title;
@@ -57,7 +58,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 /**
   指定构造方法
  */
-- (instancetype)initWithFrame:(CGRect)frame delegate:(nonnull id<GSWebViewDelegate>)delegate JSPerformer:(nonnull id)performer;
+- (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer;
 
 - (void)loadRequest:(NSURLRequest *)request;
   
@@ -93,14 +94,19 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error;
 
+@end
+
+@protocol GSWebViewJavaScript <NSObject>
+
+
 /**
-  JS调用OC方法
+ JS调用OC方法
  
-  网页中的Script标签中有此JS方法名称，但未具体实现，将参数传给Objective-C,OC将获取到的参数做下一步处理
+ 网页中的Script标签中有此JS方法名称，但未具体实现，将参数传给Objective-C,OC将获取到的参数做下一步处理
  
-  必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
+ 必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
  
-  返回一个从保存OC方法名册数组
+ 返回一个从保存OC方法名册数组
  */
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 

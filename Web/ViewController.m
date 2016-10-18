@@ -20,7 +20,7 @@ Stuff; \
 _Pragma("clang diagnostic pop") \
  
 
-@interface ViewController ()<GSWebViewDelegate>
+@interface ViewController ()<GSWebViewDelegate,GSWebViewJavaScript>
   
 @property (nonatomic, strong) GSWebView * webView;
 
@@ -45,7 +45,9 @@ _Pragma("clang diagnostic pop") \
     
     NSURLRequest * req = [NSURLRequest requestWithURL:[NSURL URLWithString:ADDRESS]];
     NSLog(@"%@",req.URL.absoluteString);
-    _webView = [[GSWebView alloc] initWithFrame:self.view.bounds delegate:self JSPerformer:self];
+    _webView = [[GSWebView alloc] initWithFrame:self.view.bounds JSPerformer:self];
+    _webView.script = self;
+    _webView.script = self;
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
 }

@@ -73,7 +73,7 @@
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    return [self initWithFrame:frame delegate:nil JSPerformer:nil];
+    return [self initWithFrame:frame JSPerformer:nil];
 #pragma clang diagnostic pop 
 }
 
@@ -90,10 +90,9 @@ static long const kGSJSContextKey  = 1000;
     return objc_getAssociatedObject(self, &kGSJSValueKey);
 }
 
-- (instancetype)initWithFrame:(CGRect)frame delegate:(id<GSWebViewDelegate>)delegate JSPerformer:(id)performer
+- (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer
 {
     if (self = [super initWithFrame:frame]) {
-        _delegate = delegate;
         _pointers = [NSPointerArray weakObjectsPointerArray];
         [_pointers addPointer:(__bridge void * _Nullable)(performer)]; 
         if ([UIDevice currentDevice].systemVersion.doubleValue >= 8.0) {
@@ -239,17 +238,20 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     [self bindingCtxAndValue];
     [self cleanWebCacheValues];
     
-    if([self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
+    if([self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
         __weak typeof(self) weakSelf = self;
-        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
+        [[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
-            self.jsContext[name] = ^(id body){
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (weakSelf) return ;
-                    __strong typeof(weakSelf) strongSelf = weakSelf;
-                    [strongSelf excuteJavaScriptFunctionWithName:name parameter:body];
-                });
-            };
+             __strong typeof(weakSelf) strongSelf = weakSelf;
+             JSValue *jsValue = [strongSelf.jsContext globalObject];
+             if ([jsValue hasProperty:name]) {
+                 strongSelf.jsContext[name] = ^(id body){
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         if (weakSelf) return ;
+                         [strongSelf excuteJavaScriptFunctionWithName:name parameter:body];
+                     });
+                 };
+             }
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]) {
@@ -326,9 +328,9 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     _title = webView.title; 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
+    if (self.delegate && [self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
         __weak typeof(self) weakSelf = self;
-        [[self.delegate gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
+        [[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
              if (!weakSelf) return ;
              __strong typeof(weakSelf) strongSelf = weakSelf;
