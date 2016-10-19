@@ -70,16 +70,14 @@ GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebVie
 ```
 * * *
 #### 3.服务端JavaScript源码必须的改动
-* WKWebView的JS交互，最不惹人注目但最为关键的地方在于此。
-* 在UIWebView的时代，想要JS交互，JS代码不需要做出改动，但是在WKWebView时代，JS需要根据客户端版本号调用不同的方法与与客户端进行交互。
-官方文档里这句话'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行数据传递。
-> Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.\<name\>.postMessage(\<messageBody\>) for all frames.
+* 改动并非是为了增加复杂度，而是GSWebView内部的WKWebView必须通过Apple.Inc指定的方法  
+> Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.<name>.postMessage(<messageBody>) for all frames.
 举例说明：
-JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
 
+JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
 但是在GSWebView中，必须这样:
 ```javascript
-	//获取客户端iOS版本
+//获取客户端iOS版本
 var version = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);  
 version = parseInt(ver[1], 10);  
 
