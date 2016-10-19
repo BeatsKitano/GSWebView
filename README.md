@@ -71,9 +71,10 @@ GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebVie
 * * *
 #### 3.服务端JavaScript源码必须的改动
 * 改动并非是为了增加复杂度，而是GSWebView内部的WKWebView必须通过Apple.Inc指定的方法  
-> Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.<name>.postMessage(<messageBody>) for all frames.
-举例说明：
 
+> Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.<name>.postMessage(<messageBody>) for all frames.
+
+举例说明：
 JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
 但是在GSWebView中，必须这样:
 ```javascript
