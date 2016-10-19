@@ -16,8 +16,8 @@
 单<font size=4>内存占用</font>这一点考虑，使用WKWebView便是明智的选择。
 ***
 #### 2.如UIWebView一样使用WKWebView，用熟悉的API开发
-* iOS8之前，UIWebView与JavaScriptCore框架基本完成了客户端网页操作。简单的API，仅仅有一个协议支撑回调，使用简单，我们都熟悉此道。
-* iOS8之后，WKWebView的出现，打乱了这一切，整个WKWebView的设计，基本与UIWebView的设计无关，似乎已经脱胎换骨。
+* iOS8之前，UIWebView与JavaScriptCore框架基本完成了客户端网页操作,使用简单。
+* iOS8之后，WKWebView的出现，整个的设计，基本与UIWebView的设计无关，似乎已经脱胎换骨。
 * 在不同iOS版本中做判断进行开发，将导致代码量增多，如果能将WKWebView设计成与UIWebView一样的使用习惯，学习成本会大大降低。使用者无需考虑系统版本,且依旧如UIWebView去使用，这样的设计极有必要。
 GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚至可以说，在JS交互上，做到了更佳简单。
 
@@ -25,7 +25,7 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 
 指定初始化构造方法
 ```objective-c
-- (instancetype)initWithFrame:(CGRect)frame delegate:(nonnull id<GSWebViewDelegate>)delegate JSPerformer:(nonnull id)performer; 
+- (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer; 
 ```
 
 同UIWebView属性
@@ -42,11 +42,13 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 
 形神皆似的协议方法
 ```objective-c
+#prama mark - GSWebViewDelegate
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType;
 - (void)gswebViewDidStartLoad:(GSWebView *)webView;
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error; 
 
+#prama mark - GSWebViewJavaScript
 //此协议方法为JS交互关键
 - (NSArray<NSString *>*)gswebViewRegisterObjectiveCMethodsForJavaScriptInteraction;
 ```
@@ -83,11 +85,8 @@ if(version >= 7.0 && version < 8.0){
 } 
 ```
 * * *
-#### 4.GSWebView采用装饰模式的实现整合的思路
-* GSWebView内部一个UIView指针，当调用指定构造方法初始化后，内部根据不同的系统版本，将UIView指针指向WKWebView或者UIWebView。 
-* 关于回调，除去UI方面的进度回调通过GSWebViewDelegate协议，在GSWebView中注册需要的JS调用的OC方法，都通过一个指向函数的指针实现回调，且回调线程为主线程。
-* OC调用JS的回调则在一个block中完成，且回调线程为主线程。
-* iOS8系统以下内存泄漏优化。UIWebView的内存泄漏问题至今没有很好的解决方案。
+#### 4.GSWebView中的两套协议
+GSWebViewDelegate负责UI状态的传递,GSWebViewJavaScript只负责JS交互。采用两套协议的目的，是为将WebView的UI状态和JS交互分开，避开代码连篇累牍。对于WebView的依赖如果足够,可考虑让Category遵循GSWebViewJavaScript协议，完全抽离JS交互。
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
 * * *
