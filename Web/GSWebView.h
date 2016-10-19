@@ -56,7 +56,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (instancetype)init __IOS_PROHIBITED;
 
 /**
-  指定构造方法
+  指定构造方法，使用此方法进行初始化
  */
 - (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer;
 
