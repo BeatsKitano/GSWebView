@@ -44,15 +44,14 @@ JS交互重点
 GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebViewDelegate定义了加载状态，GSWebViewJavaScript则只定义了JS交互。
 ```objective-c
 #prama mark - GSWebViewJavaScript
-/**
  /**
- 交互协议
+   交互协议
  */
 @protocol GSWebViewJavaScript <NSObject>
 @optional
 
 /**
- 调用OC方法
+   调用OC方法
  	
      - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
      {
