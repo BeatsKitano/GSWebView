@@ -16,19 +16,10 @@
 单<font size=4>内存占用</font>这一点考虑，使用WKWebView便是明智的选择。
 ***
 #### 2.如UIWebView一样使用WKWebView，用熟悉的API开发
-* iOS8之前，UIWebView与JavaScriptCore框架基本完成了客户端网页操作,使用简单。
-* iOS8之后，WKWebView的出现，整个的设计，基本与UIWebView的设计无关，似乎已经脱胎换骨。
-* 在不同iOS版本中做判断进行开发，将导致代码量增多，如果能将WKWebView设计成与UIWebView一样的使用习惯，学习成本会大大降低。使用者无需考虑系统版本,且依旧如UIWebView去使用，这样的设计极有必要。
-GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚至可以说，在JS交互上，做到了更佳简单。
-
-###### 使用介绍
-
-指定初始化构造方法
-```objective-c
-- (instancetype)initWithFrame:(CGRect)frame JSPerformer:(nonnull id)performer; 
-```
-
-同UIWebView属性
+* GSWebView被设计成UIWebView相同的样式，意在降低开发者的使用难度。
+##### 使用介绍：同样的款式如何打造不一样的内涵？
+ 
+熟悉的属性、方法
 ```objective-c
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
 @property (nonatomic, readonly) BOOL canGoBack;
@@ -46,25 +37,40 @@ GSWebView整合了两代WebView，使用习惯力求完美接近UIWebview，甚�
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType;
 - (void)gswebViewDidStartLoad:(GSWebView *)webView;
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
-- (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error; 
-
-#prama mark - GSWebViewJavaScript
-//此协议方法为JS交互关键
-- (NSArray<NSString *>*)gswebViewRegisterObjectiveCMethodsForJavaScriptInteraction;
+- (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error;  
 ```
 
 JS交互重点
+GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebViewDelegate定义了加载状态，GSWebViewJavaScript则只定义了JS交互。
 ```objective-c
+#prama mark - GSWebViewJavaScript
 /**
-  JS调用OC方法
-  网页中的Script标签中有此JS方法名称，但未具体实现，将参数传给Objective-C,OC将获取到的参数做下一步处理
-  必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
-*/
-- (NSArray<NSString *>*)gswebViewRegisterObjectiveCMethodsForJavaScriptInteraction;
+ /**
+ 交互协议
+ */
+@protocol GSWebViewJavaScript <NSObject>
+@optional
+
+/**
+ 调用OC方法
+ 	
+     - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
+     {
+        return @[@"getCurrentUserId"];
+     }
+     //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
+     //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
+     - (void)getCurrentUserId:(NSString *)Id
+     {
+        NSLong@(@"JS调用到OC%@",Id);
+     }
+ */
+- (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
+
+@end
 ```
-当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
 * * *
-#### 3.JavaScript源码必须做出的改动！
+#### 3.服务端JavaScript源码必须的改动
 * WKWebView的JS交互，最不惹人注目但最为关键的地方在于此。
 * 在UIWebView的时代，想要JS交互，JS代码不需要做出改动，但是在WKWebView时代，JS需要根据客户端版本号调用不同的方法与与客户端进行交互。
 官方文档里这句话'window.webkit.messageHandlers.<name>.postMessage(<messageBody>)'进行数据传递。
@@ -84,9 +90,38 @@ if(version >= 7.0 && version < 8.0){
 	window.webkit.messageHandlers.getConsultationInfo.postMessage(id)
 } 
 ```
-* * *
-#### 4.GSWebView中的两套协议
-GSWebViewDelegate负责UI状态的传递,GSWebViewJavaScript只负责JS交互。采用两套协议的目的，是为将WebView的UI状态和JS交互分开，避开代码连篇累牍。对于WebView的依赖如果足够,可考虑让Category遵循GSWebViewJavaScript协议，完全抽离JS交互。
+* * * 
+#### 4.提醒与注意事项
+如果之前使用了UIWebView，如今使用GSWebView，在服务端对JS源码做出改动后，必须要考虑客户端老版本的q兼容情况。在下有个建议：
+```objective-c
+NSString * shouldUseLatestWebView;
+if (ELIS_IOS_8) {
+    shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"1"];
+}else{
+    shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"0"];
+} 
+[self.webview excuteJavaScript:jsGetCurrentUserId completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) {
+     if (error) {
+   	 WJLog(@"注入JS方法shouldUseLatestWebView出错：%@",[error localizedDescription]);
+    }
+}];
+```
+直接告诉服务端是否使用最新的交互方式：
+```javascript
+//一个全局的变量
+var isBool = "";
+
+function shouldUseLatestWebView(isBool){ 
+	isBool = isBool;
+}
+
+if(isBool == "0" || isBool == ""){ 
+	getConsultationInfo(id); 
+}else if(isBool == "1"){ 
+ 	window.webkit.messageHandlers.getConsultationInfo.postMessage(id);
+} 
+```
+如此一来，比克减少服务端去判断客户端的版本号。
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
 * * *
