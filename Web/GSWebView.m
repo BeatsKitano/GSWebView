@@ -343,9 +343,6 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     }
 }
 
-/**
- *  JS调用OC
- */
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message
 {
     [self excuteJavaScriptFunctionWithName:message.name parameter:message.body];

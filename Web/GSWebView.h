@@ -43,9 +43,9 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 @property (nullable, nonatomic, readonly, strong) NSURLRequest *request;
 @property (nullable, nonatomic, readonly, copy) NSString * title;
 
-@property (nullable, nonatomic, copy) NSString * customAlertTitle;    //当拦截到JS中的alter方法，自定义弹出框的标题
-@property (nullable, nonatomic, copy) NSString * customConfirmTitle;  //当拦截到JS中的confirm方法，自定义弹出框的标题
-@property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0);//,8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
+@property (nullable, nonatomic, copy) NSString * customAlertTitle;                      //当拦截到JS中的alter方法，自定义弹出框的标题
+@property (nullable, nonatomic, copy) NSString * customConfirmTitle;                    //当拦截到JS中的confirm方法，自定义弹出框的标题
+@property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0); //8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
 
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
 @property (nonatomic, readonly, getter=canGoBack) BOOL canGoBack;
@@ -63,10 +63,9 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (void)loadRequest:(NSURLRequest *)request;
   
 /**
- 执行JavaScript方法
- 
- OC调用网页中的JS方法,可以取得该JS方法的返回值
- 
+ 1、*调用网页中的JS方法,可以取得该JS方法的返回值*
+ 2、*执行该方法时，务必要求网页中存在该JS方法，否则引发Creash*
+ 3、*倘若WebView整合在同一个文件中，服务端的公共JS文件必须拦截此方法*
  */
 - (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler;
 
@@ -85,10 +84,14 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 @end
 
+#pragma mark - Protocol
 
+/**
+ 加载状态回调
+ */
 @protocol GSWebViewDelegate <NSObject>
-
 @optional
+
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType;
 - (void)gswebViewDidStartLoad:(GSWebView *)webView;
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
@@ -96,17 +99,25 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 @end
 
-@protocol GSWebViewJavaScript <NSObject>
-
 
 /**
- JS调用OC方法
+ 交互协议
+ */
+@protocol GSWebViewJavaScript <NSObject>
+@optional
+
+/**
+ 调用OC方法
  
- 网页中的Script标签中有此JS方法名称，但未具体实现，将参数传给Objective-C,OC将获取到的参数做下一步处理
- 
- 必须在OC中具体实现该方法，方法参数可用id(或明确知晓JS传来的参数类型).
- 
- 返回一个从保存OC方法名册数组
+     - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
+     {
+        return @[@"getCurrentUserId"];
+     }
+     
+     - (void)getCurrentUserId:(NSString *)Id
+     {
+        NSLong@(@"JS调用到OC%@",Id);
+     }
  */
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 
