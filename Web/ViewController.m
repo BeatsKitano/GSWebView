@@ -50,12 +50,7 @@ _Pragma("clang diagnostic pop") \
     [_webView loadRequest:req];
      
 }
-
-- (void)method
-{
-    
-}
-
+  
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {
     return @[@"getConsultationInfo"];
