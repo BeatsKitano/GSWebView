@@ -423,6 +423,7 @@
 				4B8CDA661D9A00BC009EBD1B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4BFD38AC1D869C3D00BC700D /* Build configuration list for PBXProject "Web" */ = {
 			isa = XCConfigurationList;

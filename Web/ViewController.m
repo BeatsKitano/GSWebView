@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #import <mach/mach.h>
 #import "GSParentViewController.h"
+#import <objc/runtime.h>
 
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
@@ -41,20 +42,23 @@ _Pragma("clang diagnostic pop") \
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"ViewController viewDidLoad  成功");
-    
     NSURLRequest * req = [NSURLRequest requestWithURL:[NSURL URLWithString:ADDRESS]];
-    NSLog(@"%@",req.URL.absoluteString);
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds JSPerformer:self];
     _webView.script = self;
     _webView.script = self;
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
+     
 }
- 
+
+- (void)method
+{
+    
+}
+
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
 {
-    return @[@"getConsultationInfo",@"ttttt"];
+    return @[@"getConsultationInfo"];
 }
 
 - (BOOL)gswebView:(GSWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(GSWebViewNavigationType)navigationType
@@ -78,17 +82,11 @@ _Pragma("clang diagnostic pop") \
     NSLog(@"加载失败:%@",error);
 }
 
-- (void)ttttt:(NSString *)str
+- (void)getConsultationInfo:(NSDictionary *)param
 {
-    NSLog(@"出错了");
-}
-
-- (void)getConsultationInfo:(NSString *)str
-{
-    NSLog(@"JS传来参数:%@",str);
-   
+    NSLog(@"JS传来参数:%@",param[@"id"]);
     
-    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"http://t1.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131813",str]];
+    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"http://t1.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131813",param[@"id"]]];
     NSURLRequest * req = [NSURLRequest requestWithURL:url]; 
     [_webView loadRequest:req];
     

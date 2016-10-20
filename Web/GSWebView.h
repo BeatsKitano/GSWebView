@@ -63,9 +63,9 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (void)loadRequest:(NSURLRequest *)request;
   
 /**
- 1、*调用网页中的JS方法,可以取得该JS方法的返回值*
- 2、*执行该方法时，务必要求网页中存在该JS方法，否则引发Creash*
- 3、*倘若WebView整合在同一个文件中，服务端的公共JS文件必须拦截此方法*
+ 1、* 调用网页中的JS方法,可以取得该JS方法的返回值 *
+ 2、* 执行该方法时，务必要求网页中存在该JS方法，否则引发Creash *
+ 3、* 倘若WebView整合在同一个文件中，服务端的公共JS文件必须拦截此方法 *
  */
 - (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler;
 
@@ -77,8 +77,8 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (void)goForward;
 
 /**
- *  此方法的调用建议写在“application:didFinishLaunchingWithOptions:”中
- *  App启动时移除掉所有缓存
+ *  * 此方法的调用建议写在“application:didFinishLaunchingWithOptions:”中 *
+ *  * App启动时移除掉所有缓存 *
  */
 + (void)removeAllGSWebViewCache;
 
@@ -114,6 +114,8 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
         return @[@"getCurrentUserId"];
      }
      
+    //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
+    //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
      - (void)getCurrentUserId:(NSString *)Id
      {
         NSLong@(@"JS调用到OC%@",Id);

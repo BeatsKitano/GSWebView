@@ -277,7 +277,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
-    UIViewController * currentVC = [self currentViewController];
+    UIViewController * currentVC = [self getTopViewController];
     if (currentVC) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -300,11 +300,11 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    BOOL decision = YES;
+    BOOL isNavigator = YES;
     if ([self.delegate respondsToSelector:@selector(gswebView:shouldStartLoadWithRequest:navigationType:)]) {
-        decision = [self.delegate gswebView:self shouldStartLoadWithRequest:navigationAction.request navigationType:(GSWebViewNavigationType)navigationAction.navigationType];
+        isNavigator = [self.delegate gswebView:self shouldStartLoadWithRequest:navigationAction.request navigationType:(GSWebViewNavigationType)(navigationAction.navigationType < 0? navigationAction.navigationType : 5)];
     }
-    if (!decision) {
+    if (!isNavigator) {
         decisionHandler(WKNavigationActionPolicyCancel);
     }else{
         decisionHandler(WKNavigationActionPolicyAllow);
@@ -374,8 +374,8 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     [self addSubview:_webView];
 }
 
-- (UIViewController *)currentViewController{
-    UIViewController *vc = nil;
+- (UIViewController *)getTopViewController
+{
     UIWindow * window = [[UIApplication sharedApplication] keyWindow];
     if (window.windowLevel != UIWindowLevelNormal) {
         NSArray *windows = [[UIApplication sharedApplication] windows];
@@ -387,12 +387,13 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         }
     }
     UIView *frontView = [[window subviews] firstObject];
-    id nextResponder = [frontView nextResponder];
+    id nextResponder = [frontView nextResponder]; 
+    UIViewController * top = nil;
     if ([nextResponder isKindOfClass:[UIViewController class]])
-        vc = nextResponder;
+        top = nextResponder;
     else
-        vc = window.rootViewController;
-    return vc;
+        top = window.rootViewController;
+    return top;
 }
 
 typedef void (*pFunction)(id, SEL, id);
