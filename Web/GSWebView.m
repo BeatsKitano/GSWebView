@@ -192,7 +192,7 @@ static long const kGSJSContextKey  = 1000;
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     if ([self.delegate respondsToSelector:@selector(gswebView:shouldStartLoadWithRequest:navigationType:)]) {
-        return [self.delegate gswebView:(GSWebView *)_webView shouldStartLoadWithRequest:request navigationType:(GSWebViewNavigationType)navigationType];
+        return [self.delegate gswebView:self shouldStartLoadWithRequest:request navigationType:(GSWebViewNavigationType)navigationType];
     }
     return YES;
 }
@@ -200,7 +200,7 @@ static long const kGSJSContextKey  = 1000;
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
     if ([self.delegate respondsToSelector:@selector(gswebViewDidStartLoad:)]) {
-        [self.delegate gswebViewDidStartLoad:(GSWebView *)_webView];
+        [self.delegate gswebViewDidStartLoad:self];
     }
 }
 
@@ -255,14 +255,14 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]) {
-        [self.delegate gswebViewDidFinishLoad:(GSWebView *)_webView];
+        [self.delegate gswebViewDidFinishLoad:self];
     }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     if ([self.delegate respondsToSelector:@selector(gswebView:didFailLoadWithError:)]) {
-        [self.delegate gswebView:(GSWebView *)_webView didFailLoadWithError:error];
+        [self.delegate gswebView:self didFailLoadWithError:error];
     }
 }
 
@@ -321,7 +321,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
     if ([self.delegate respondsToSelector:@selector(gswebView:didFailLoadWithError:)]) {
-        [self.delegate gswebView:(GSWebView *)_webView didFailLoadWithError:error];
+        [self.delegate gswebView:self didFailLoadWithError:error];
     }
 }
   
@@ -339,7 +339,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]){
-        [self.delegate gswebViewDidFinishLoad:(GSWebView *)_webView];
+        [self.delegate gswebViewDidFinishLoad:self];
     }
 }
 
