@@ -213,7 +213,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
     //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
      - (void)getCurrentUserId:(NSString *)Id
      {
-        NSLong@(@"JS调用到OC%@",Id);
+        NSLog(@"JS调用到OC%@",Id);
      }
  */
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;

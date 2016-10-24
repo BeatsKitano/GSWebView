@@ -106,10 +106,10 @@
 			children = (
 				4B25A7231D8E23F800E6AB2C /* GSWebView.h */,
 				4B25A7241D8E23F800E6AB2C /* GSWebView.m */,
-				4BFD38BA1D869C3D00BC700D /* ViewController.h */,
-				4BFD38BB1D869C3D00BC700D /* ViewController.m */,
 				4B233F051D921124005C0ED0 /* GSParentViewController.h */,
 				4B233F061D921124005C0ED0 /* GSParentViewController.m */,
+				4BFD38BA1D869C3D00BC700D /* ViewController.h */,
+				4BFD38BB1D869C3D00BC700D /* ViewController.m */,
 				4BFD38B41D869C3D00BC700D /* Supporting Files */,
 			);
 			path = Web;
