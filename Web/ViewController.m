@@ -42,6 +42,7 @@ _Pragma("clang diagnostic pop") \
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     NSURLRequest * req = [NSURLRequest requestWithURL:[NSURL URLWithString:ADDRESS]];
     _webView = [[GSWebView alloc] initWithFrame:self.view.bounds JSPerformer:self];
     _webView.script = self;

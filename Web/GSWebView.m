@@ -107,19 +107,23 @@ static long const kGSJSContextKey  = 1000;
 - (void)loadRequest:(NSURLRequest *)request
 {
     _request = request;
-    if ([_webView isKindOfClass:[WKWebView class]]) {
+    if ([_webView isKindOfClass:[WKWebView class]])
         [(WKWebView *)_webView loadRequest:request];
-    }else{
-        [(UIWebView *)_webView loadRequest:request];
-    }
+    [(UIWebView *)_webView loadRequest:request];
+}
+
+- (void)loadHTMLString:(NSString *)string baseURL:(nullable NSURL *)baseURL
+{
+    if ([_webView isKindOfClass:[WKWebView class]])
+        [(WKWebView *)_webView loadHTMLString:string baseURL:baseURL];
+    [(UIWebView *)_webView loadHTMLString:string baseURL:baseURL];
 }
 
 - (id)performer
 {
     return [_pointers pointerAtIndex:0];
 }
-
-//执行JS并且有回调
+ 
 - (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler
 {
     if ([_webView isKindOfClass:[WKWebView class]]) {
