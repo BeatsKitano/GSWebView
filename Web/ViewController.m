@@ -28,10 +28,7 @@ _Pragma("clang diagnostic pop") \
 @end
 
 @implementation ViewController
-{
-    dispatch_source_t timer;
-}
-
+  
 #define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131813"
   
 - (void)dealloc
