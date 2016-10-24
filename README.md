@@ -17,6 +17,8 @@
 ***
 #### 2.如UIWebView一样使用WKWebView，用熟悉的API开发
 * GSWebView被设计成UIWebView相同的样式，意在降低开发者的使用难度。
+* 引入WebKit与JavaScriptCore库，即刻出发，开始使用GSWebView。
+
 ##### 使用介绍：同样的款式如何打造不一样的内涵？
  
 熟悉的属性、方法
