@@ -26,6 +26,12 @@
 #import <WebKit/WebKit.h>
 #endif
 
+#define IgnorePerformSelectorLeakWarning(code) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wnonnull\"") \
+code \
+_Pragma("clang diagnostic pop")
+
 @interface GSWebViewConfiguration : WKWebViewConfiguration @end
 
 @implementation GSWebViewConfiguration
@@ -71,10 +77,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-    return [self initWithFrame:frame JSPerformer:nil];
-#pragma clang diagnostic pop 
+    IgnorePerformSelectorLeakWarning(return [self initWithFrame:frame JSPerformer:nil];)
 }
 
 static long const kGSJSValueKey    = 1100;

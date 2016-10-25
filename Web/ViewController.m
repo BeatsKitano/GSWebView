@@ -9,7 +9,7 @@
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 _Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+_Pragma("clang diagnostic ignored \"-Wnonnull\"") \
 Stuff; \
 _Pragma("clang diagnostic pop") \
  
@@ -21,7 +21,8 @@ _Pragma("clang diagnostic pop") \
 @end
 
 @implementation ViewController
-  
+
+
 #define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131813"
   
 - (void)dealloc
@@ -39,7 +40,7 @@ _Pragma("clang diagnostic pop") \
     _webView.script = self;
     [self.view addSubview:_webView];
     [_webView loadRequest:req];
-     
+    
 }
 
 - (NSArray <NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction
