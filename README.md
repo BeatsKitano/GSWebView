@@ -95,14 +95,14 @@ if(version >= 7.0 && version < 8.0){
 如果之前使用了UIWebView，如今使用GSWebView，在服务端对JS源码做出改动后，必须要考虑客户端老版本的q兼容情况。在下有个建议：
 ```objective-c
 NSString * shouldUseLatestWebView;
-if (ELIS_IOS_8) {
+if (IS_IOS_8) {
     shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"1"];
 }else{
     shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"0"];
 } 
 [self.webview excuteJavaScript:jsGetCurrentUserId completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) {
      if (error) {
-   	 WJLog(@"注入JS方法shouldUseLatestWebView出错：%@",[error localizedDescription]);
+   	 NSLog(@"注入JS方法shouldUseLatestWebView出错：%@",[error localizedDescription]);
     }
 }];
 ```
