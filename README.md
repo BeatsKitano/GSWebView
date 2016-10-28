@@ -92,21 +92,22 @@ if(version >= 7.0 && version < 8.0){
 ```
 * * * 
 #### 4.提醒与注意事项
-如果之前使用了UIWebView，如今使用GSWebView，在服务端对JS源码做出改动后，必须要考虑客户端老版本的q兼容情况。在下有个建议：
+如果之前使用了UIWebView，如今使用GSWebView，在服务端对JS源码做出改动后，必须要考虑客户端老版本的兼容情况。当改动服务端的JS代码，势必导致老版本中的UIWebView交互失效。在下有个建议：
+当GSWebView加载成功，我们调用服务端预先写好的方法 function shouldUseLatestWebView(isBool);
 ```objective-c
 NSString * shouldUseLatestWebView;
-if (ELIS_IOS_8) {
+if (IS_IOS_8) {
     shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"1"];
 }else{
     shouldUseLatestWebView = [NSString stringWithFormat:@"shouldUseLatestWebView('%@')", @"0"];
 } 
 [self.webview excuteJavaScript:jsGetCurrentUserId completionHandler:^(id  _Nonnull params, NSError * _Nonnull error) {
      if (error) {
-   	 WJLog(@"注入JS方法shouldUseLatestWebView出错：%@",[error localizedDescription]);
+   	 NSLog(@"注入JS方法shouldUseLatestWebView出错：%@",[error localizedDescription]);
     }
 }];
 ```
-直接告诉服务端是否使用最新的交互方式：
+服务端用一个全局变量保存isBool的值，当isBool为字符串1时，说明需要使用的是第二代WebView，服务端必须使用最新的交互方式代码，如果为字符串0或者空，则依旧使用原来的代码交互：
 ```javascript
 //一个全局的变量
 var isBool = "";
