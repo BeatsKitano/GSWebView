@@ -68,7 +68,7 @@ _Pragma("clang diagnostic pop")
 
 @interface GSWebView (GSPrivateMethod)
 
-- (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param;
+- (void)excuteJavaScriptWithMethodName:(NSString *)name parameter:(id)param;
 - (void)excuteFuncWithName:(NSString *)name;
 
 @end
@@ -231,7 +231,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
                  strongSelf.jsContext[name] = ^(id body){
                      dispatch_async(dispatch_get_main_queue(), ^{
                          if (weakSelf) return ;
-                         [strongSelf excuteJavaScriptFunctionWithName:name parameter:body];
+                         [strongSelf excuteJavaScriptWithMethodName:name parameter:body];
                      });
                  };
              }
@@ -328,7 +328,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message
 {
-    [self excuteJavaScriptFunctionWithName:message.name parameter:message.body];
+    [self excuteJavaScriptWithMethodName:message.name parameter:message.body];
 }
 
 #pragma mark -
@@ -447,10 +447,10 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 @implementation GSWebView (GSPrivateMethod)
 
-typedef void (*pFunction)(id, SEL, id);
-typedef void (*pFunc)(id, SEL);
+typedef void (*GSFunctionPointWithParam)(id, SEL, id);
+typedef void (*GSFunctionPointNoParam)(id, SEL);
 
-- (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param
+- (void)excuteJavaScriptWithMethodName:(NSString *)name parameter:(id)param
 {
     if (self.performer) {
         SEL selector;
@@ -462,12 +462,11 @@ typedef void (*pFunc)(id, SEL);
         if ([self.performer respondsToSelector:selector]){
             IMP imp = [self.performer methodForSelector:selector];
             if (param){
-                pFunction f = (void *)imp;
+                GSFunctionPointWithParam f = (void *)imp;
                 f(self.performer, selector,param);
             }
             else{
-                typedef void (*func)(id, SEL);
-                func f = (void *)imp;
+                GSFunctionPointNoParam f = (void *)imp;
                 f(self.performer, selector);
             }
         }
@@ -478,11 +477,18 @@ typedef void (*pFunc)(id, SEL);
 {
     SEL selector = NSSelectorFromString(name);
     if ([_webView respondsToSelector:selector]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_block_t block = ^(void){
             IMP imp = [_webView methodForSelector:selector];
-            pFunc pfunc = (void *)imp;
+            GSFunctionPointNoParam pfunc = (void *)imp;
             pfunc(_webView, selector);
-        });
+        };
+        if ([[NSThread currentThread] isMainThread]) {
+            block();
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block();
+            });
+        }
     }
 }
 
