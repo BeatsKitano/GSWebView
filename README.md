@@ -68,7 +68,6 @@ GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebVie
  */
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 
-@end
 ```
 * * *
 #### 3.服务端JavaScript源码必须的改动
