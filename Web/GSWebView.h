@@ -281,9 +281,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
      {
         return @[@"getCurrentUserId"];
      }
-     
-     //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
-     //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
+ 
      - (void)getCurrentUserId:(NSString *)Id
      {
         NSLog(@"JS调用到OC%@",Id);
