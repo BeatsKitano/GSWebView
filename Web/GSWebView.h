@@ -52,7 +52,7 @@ typedef NS_ENUM(NSInteger,GSWebViewNavigationType) {
      */
     GSWebViewNavigationTypeOther
 };
-
+ 
 @protocol GSWebViewDelegate,GSWebViewJavaScript;
 
 NS_CLASS_AVAILABLE(10_10, 7_0)
@@ -67,6 +67,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  The web view's javascript interactive delegate.
  */
 @property (nonatomic, weak) id<GSWebViewJavaScript> script;
+//*********************************************************************************
 
 - (instancetype)new __IOS_PROHIBITED;
 - (instancetype)init __IOS_PROHIBITED;
@@ -145,7 +146,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  */
 @property (nonatomic, readonly, getter=isLoading) BOOL loading;
 
-/**
+/********************************************************************************
  *  Reloads the current page.
  */
 - (void)reload;
@@ -165,7 +166,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  */
 - (void)goForward;
 
-/**
+/********************************************************************************
  *  The server must intercept this method, or a non-crashing error will occur
  *
  *  @param javaScriptString  javaScript method
@@ -173,7 +174,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  */
 - (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler;
  
-/**
+/********************************************************************************
  *  clear all caches for webview
  */
 + (void)removeAllGSWebViewCache;
@@ -182,7 +183,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 #pragma mark - Protocol
 
-/**
+/********************************************************************************
  *  user interface protocol
  */
 @protocol GSWebViewDelegate <NSObject>
@@ -195,7 +196,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 
 @end
 
-/**
+/********************************************************************************
  *  JavaScriptn interactive protocol
  */
 @protocol GSWebViewJavaScript <NSObject>

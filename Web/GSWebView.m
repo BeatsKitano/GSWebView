@@ -29,8 +29,15 @@
 #define IgnorePerformSelectorLeakWarning(code) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wnonnull\"") \
-code \
+        code \
 _Pragma("clang diagnostic pop")
+
+#define IgnoreSelectorWarning(code) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"--Wundeclared-selector\"") \
+        code \
+_Pragma("clang diagnostic pop")
+
 
 @interface GSWebViewConfiguration : WKWebViewConfiguration @end
 
@@ -76,7 +83,7 @@ _Pragma("clang diagnostic pop")
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
-{
+{ 
     IgnorePerformSelectorLeakWarning(return [self initWithFrame:frame JSPerformer:nil];)
 }
 
@@ -191,10 +198,10 @@ static long const kGSJSContextKey  = 1000;
 {
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
- 
+
 /***********************************************************************************************************************************/
 
-#pragma mark - __IPHONE_7_0 --> UIWebViewDelegate
+#pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -278,9 +285,9 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     return ((WKWebView *)_webView).estimatedProgress;
 }
 
-/***********************************************************************************************************************************************/
+/************************************************************************************************************************/
 
-#pragma mark - __IPHONE_8_0 --> WKWebView
+#pragma mark - WKWebView
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
@@ -373,7 +380,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     UIWebView * web = [[UIWebView alloc] initWithFrame:frame];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wundeclared-selector"
-    [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
+    [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0]; 
 #pragma clang diagnostic pop
     web.delegate = self;
     _scrollView = web.scrollView;
