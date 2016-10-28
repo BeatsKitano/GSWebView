@@ -7,13 +7,6 @@
 #import <objc/runtime.h>
 
 
-#define SuppressPerformSelectorLeakWarning(Stuff) \
-_Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Wnonnull\"") \
-Stuff; \
-_Pragma("clang diagnostic pop") \
- 
-
 @interface ViewController ()<GSWebViewDelegate,GSWebViewJavaScript>
   
 @property (nonatomic, strong) GSWebView * webView;
@@ -22,7 +15,6 @@ _Pragma("clang diagnostic pop") \
 
 @implementation ViewController
 
-//http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=134960
 #define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131812"
   
 - (void)dealloc

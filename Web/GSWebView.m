@@ -20,7 +20,7 @@
 //    THE SOFTWARE.
 
 #import "GSWebView.h"
-#import <JavaScriptCore/JavaScriptCore.h> 
+#import <JavaScriptCore/JavaScriptCore.h>
 #import <objc/runtime.h>
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
 #import <WebKit/WebKit.h>
@@ -29,13 +29,13 @@
 #define IgnorePerformSelectorLeakWarning(code) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wnonnull\"") \
-        code \
+code \
 _Pragma("clang diagnostic pop")
 
 #define IgnoreSelectorWarning(code) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"--Wundeclared-selector\"") \
-        code \
+code \
 _Pragma("clang diagnostic pop")
 
 
@@ -49,7 +49,7 @@ _Pragma("clang diagnostic pop")
         self.userContentController = [[WKUserContentController alloc] init];
         self.allowsInlineMediaPlayback = YES;
         self.preferences.minimumFontSize = 10;
-        self.processPool = [[WKProcessPool alloc]init]; 
+        self.processPool = [[WKProcessPool alloc]init];
         self.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     }
     return self;
@@ -57,12 +57,19 @@ _Pragma("clang diagnostic pop")
 
 @end
 
-/***********************************************************************************************************************************************/
+/**********************************************************************************************************/
 
 @interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate>
 
 @property (nonatomic) BOOL canGoBack;
 @property (nonatomic) BOOL canGoForward;
+
+@end
+
+@interface GSWebView (GSPrivateMethod)
+
+- (void)excuteJavaScriptFunctionWithName:(NSString *)name parameter:(id)param;
+- (void)excuteFuncWithName:(NSString *)name;
 
 @end
 
@@ -83,7 +90,7 @@ _Pragma("clang diagnostic pop")
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
-{ 
+{
     IgnorePerformSelectorLeakWarning(return [self initWithFrame:frame JSPerformer:nil];)
 }
 
@@ -104,7 +111,7 @@ static long const kGSJSContextKey  = 1000;
 {
     if (self = [super initWithFrame:frame]) {
         _pointers = [NSPointerArray weakObjectsPointerArray];
-        [_pointers addPointer:(__bridge void * _Nullable)(performer)]; 
+        [_pointers addPointer:(__bridge void * _Nullable)(performer)];
         if ([UIDevice currentDevice].systemVersion.doubleValue >= 8.0) {
             [self configureWKWebViewWithFrame:frame];
         }else{
@@ -133,7 +140,7 @@ static long const kGSJSContextKey  = 1000;
 {
     return [_pointers pointerAtIndex:0];
 }
- 
+
 - (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler
 {
     if ([_webView isKindOfClass:[WKWebView class]]) {
@@ -142,64 +149,26 @@ static long const kGSJSContextKey  = 1000;
                 completionHandler(param,error);
             }
         }];
-    }else{ 
-       JSValue * value = [self.jsContext evaluateScript:javaScriptString];
+    }else{
+        JSValue * value = [self.jsContext evaluateScript:javaScriptString];
         if (value && completionHandler) {
             completionHandler([value toObject],NULL);
         }
     }
 }
 
-#define ExcuteMethodWith(name) \
-    [self excuteFuncWithName:name]
-
-- (BOOL)isLoading
+- (void)setDataDetectorTypes:(GSDataDetectorTypes)dataDetectorTypes
 {
-    if ([_webView isKindOfClass:[UIWebView class]])
-        return [((UIWebView *)_webView) isLoading];
-    return [((WKWebView *)_webView) isLoading];
+    if ([_webView isKindOfClass:[UIWebView class]]){
+        ((UIWebView *)_webView).dataDetectorTypes = (UIDataDetectorTypes)dataDetectorTypes;
+    }else{
+        if ([((WKWebView *)_webView).configuration respondsToSelector:@selector(setDataDetectorTypes:)]) {
+            [((WKWebView *)_webView).configuration setDataDetectorTypes:(WKDataDetectorTypes)dataDetectorTypes];
+        } 
+    }
 }
 
-- (void)reload
-{
-    ExcuteMethodWith(@"reload");
-}
-
-- (void)stopLoading
-{
-    ExcuteMethodWith(@"stopLoading");
-}
-
-- (void)goBack
-{
-    ExcuteMethodWith(@"goBack");
-}
-
-- (void)goForward
-{
-    ExcuteMethodWith(@"goForward");
-}
-
-- (BOOL)canGoBack
-{
-    if ([_webView isKindOfClass:[UIWebView class]])
-        return [((UIWebView *)_webView) canGoBack];
-    return [((WKWebView *)_webView) canGoBack];
-}
-
-- (BOOL)canGoForward
-{
-    if ([_webView isKindOfClass:[UIWebView class]])
-        return [((UIWebView *)_webView) canGoForward];
-    return [((WKWebView *)_webView) canGoForward];
-}
-
-+ (void)removeAllGSWebViewCache
-{
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
-
-/***********************************************************************************************************************************/
+/***********************************************************************************************************************/
 
 #pragma mark - UIWebViewDelegate
 
@@ -266,7 +235,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
                      });
                  };
              }
-        }];
+         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]) {
         [self.delegate gswebViewDidFinishLoad:self];
@@ -338,19 +307,19 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         [self.delegate gswebView:self didFailLoadWithError:error];
     }
 }
-  
+
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
-    _title = webView.title; 
+    _title = webView.title;
     if (self.delegate && [self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
         __weak typeof(self) weakSelf = self;
         [[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
              if (!weakSelf) return ;
              __strong typeof(weakSelf) strongSelf = weakSelf;
-            [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
-            [webView.configuration.userContentController addScriptMessageHandler:strongSelf name:name];
-        }];
+             [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
+             [webView.configuration.userContentController addScriptMessageHandler:strongSelf name:name];
+         }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]){
         [self.delegate gswebViewDidFinishLoad:self];
@@ -380,7 +349,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     UIWebView * web = [[UIWebView alloc] initWithFrame:frame];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wundeclared-selector"
-    [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0]; 
+    [NSClassFromString(@"WebCache") performSelector:@selector(setDisabled:) withObject:[NSNumber numberWithBool:YES] afterDelay:0];
 #pragma clang diagnostic pop
     web.delegate = self;
     _scrollView = web.scrollView;
@@ -401,7 +370,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         }
     }
     UIView *frontView = [[window subviews] firstObject];
-    id nextResponder = [frontView nextResponder]; 
+    id nextResponder = [frontView nextResponder];
     UIViewController * top = nil;
     if ([nextResponder isKindOfClass:[UIViewController class]])
         top = nextResponder;
@@ -409,6 +378,74 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         top = window.rootViewController;
     return top;
 }
+
+@end
+
+#pragma mark - Navigation
+
+@implementation GSWebView (Navigation)
+
+- (BOOL)isLoading
+{
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) isLoading];
+    return [((WKWebView *)_webView) isLoading];
+}
+
+- (BOOL)canGoBack
+{
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) canGoBack];
+    return [((WKWebView *)_webView) canGoBack];
+}
+
+- (BOOL)canGoForward
+{
+    if ([_webView isKindOfClass:[UIWebView class]])
+        return [((UIWebView *)_webView) canGoForward];
+    return [((WKWebView *)_webView) canGoForward];
+}
+
+
+#define ExcuteMethodWith(name) \
+[self excuteFuncWithName:name]
+
+- (void)reload
+{
+    ExcuteMethodWith(@"reload");
+}
+
+- (void)stopLoading
+{
+    ExcuteMethodWith(@"stopLoading");
+}
+
+- (void)goBack
+{
+    ExcuteMethodWith(@"goBack");
+}
+
+- (void)goForward
+{
+    ExcuteMethodWith(@"goForward");
+}
+
+@end
+
+#pragma mark - CleanCache
+
+@implementation GSWebView (CleanCache)
+
++ (void)removeAllGSWebViewCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+ 
+@end
+
+#pragma mark - GSPrivateMethod
+
+@implementation GSWebView (GSPrivateMethod)
 
 typedef void (*pFunction)(id, SEL, id);
 typedef void (*pFunc)(id, SEL);
@@ -421,7 +458,7 @@ typedef void (*pFunc)(id, SEL);
             selector = NSSelectorFromString(name);
         else
             selector = NSSelectorFromString([name stringByAppendingString:@":"]);
-  
+        
         if ([self.performer respondsToSelector:selector]){
             IMP imp = [self.performer methodForSelector:selector];
             if (param){
@@ -436,7 +473,7 @@ typedef void (*pFunc)(id, SEL);
         }
     }
 }
- 
+
 - (void)excuteFuncWithName:(NSString *)name
 {
     SEL selector = NSSelectorFromString(name);

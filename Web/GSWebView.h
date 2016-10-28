@@ -1,4 +1,4 @@
- 
+
 //    Copyright © 2011-2016 向小辉. All rights reserved.
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -52,8 +52,52 @@ typedef NS_ENUM(NSInteger,GSWebViewNavigationType) {
      */
     GSWebViewNavigationTypeOther
 };
- 
+
+/**
+ *  GSDataDetectorTypes
+ */
+typedef NS_OPTIONS(NSUInteger,GSDataDetectorTypes) {
+    /**
+     *  Disable detection.
+     */
+    GSDataDetectorTypeNone                  = 0,
+    /**
+     *  Phone number detection.
+     */
+    GSDataDetectorTypePhoneNumber           = 1 << 0,
+    /**
+     *  URL detection.
+     */
+    GSDataDetectorTypeLink                  = 1 << 1,
+    /**
+     *  Street address detection.
+     */
+    GSDataDetectorTypeAddress               = 1 << 2,
+    /**
+     *  Event detection.
+     */
+    GSDataDetectorTypeCalendarEvent         = 1 << 3,
+    /**
+     *  Shipment tracking number detection.
+     */
+    GSDataDetectorTypeTrackingNumber        = 1 << 4,
+    /**
+     *  Flight number detection.
+     */
+    GSDataDetectorTypeFlightNumber          = 1 << 5,
+    /**
+     *  Information users may want to look up.
+     */
+    GSDataDetectorTypeLookupSuggestion      = 1 << 6,
+    /**
+     *  Enable all types, including types that may be added later.
+     */
+    GSDataDetectorTypeAll = NSUIntegerMax
+};
+
 @protocol GSWebViewDelegate,GSWebViewJavaScript;
+
+#pragma mark - GSWebView
 
 NS_CLASS_AVAILABLE(10_10, 7_0)
 @interface GSWebView : UIView
@@ -67,7 +111,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  The web view's javascript interactive delegate.
  */
 @property (nonatomic, weak) id<GSWebViewJavaScript> script;
-//*********************************************************************************
+//**
 
 - (instancetype)new __IOS_PROHIBITED;
 - (instancetype)init __IOS_PROHIBITED;
@@ -121,13 +165,43 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  potential subresources. After a navigation completes, the value remains at 1.0
  *  until a new navigation starts, at which point it is reset to 0.0.
  */
-@property (nonatomic, assign, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0); //8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
+@property (nonatomic, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0); //8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
 
 /**
  *  The scroll view associated with the web view.
  */
 @property (nonatomic, readonly, strong) UIScrollView *scrollView;
 
+/**
+ *  An enum value indicating the type of data detection desired.
+ *  The default value is WKDataDetectorTypeNone.
+ 
+ ***********************************  SORRY  ***********************************
+ 
+ *  Sorry, I try to solve WKWebView internal dataDetector problem,             *
+ *  however, WKWebView only in iOS10 above support dataDetectorTypes.          *
+ *  I try to find the implementation of dataDetectorTypes from Apple's         *
+ *  open source code, but the new features of WKWebView IOS10 are not          *
+ *  open source.                                                               *
+ *  If you find a better way, please tell me, thank you for understanding.     *
+ 
+ *******************************************************************************
+ */
+@property (nonatomic) GSDataDetectorTypes dataDetectorTypes;
+
+/**
+ *  The server must intercept this method, or a non-crashing error will occur
+ *
+ *  @param javaScriptString  javaScript method
+ *  @param completionHandler callback
+ */
+- (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler;
+
+@end
+
+#pragma mark - Navigation
+ 
+@interface GSWebView (Navigation)
 /**
  *  A Boolean value indicating whether there is a back item in
  *  the back-forward list that can be navigated to.
@@ -146,7 +220,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  */
 @property (nonatomic, readonly, getter=isLoading) BOOL loading;
 
-/********************************************************************************
+/**
  *  Reloads the current page.
  */
 - (void)reload;
@@ -166,22 +240,20 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  */
 - (void)goForward;
 
-/********************************************************************************
- *  The server must intercept this method, or a non-crashing error will occur
- *
- *  @param javaScriptString  javaScript method
- *  @param completionHandler callback
- */
-- (void)excuteJavaScript:(NSString *)javaScriptString completionHandler:(void(^)(id params, NSError * error))completionHandler;
- 
-/********************************************************************************
+@end
+
+#pragma mark - CleanCache
+
+@interface GSWebView (CleanCache)
+
+/**
  *  clear all caches for webview
  */
 + (void)removeAllGSWebViewCache;
 
 @end
 
-#pragma mark - Protocol
+#pragma mark - Protocol:GSWebViewDelegate GSWebViewJavaScript
 
 /********************************************************************************
  *  user interface protocol
@@ -210,8 +282,8 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
         return @[@"getCurrentUserId"];
      }
      
-    //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
-    //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
+     //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
+     //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
      - (void)getCurrentUserId:(NSString *)Id
      {
         NSLog(@"JS调用到OC%@",Id);
@@ -220,5 +292,5 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 
 @end
-  
+ 
 NS_ASSUME_NONNULL_END
