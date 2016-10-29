@@ -1,7 +1,13 @@
-<small>如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。
+<small>
+1、在阅读过无数关于WebView的文章后，才有此文的出现。某种意义上，此文的初衷并非技术分享，而是对抄袭的不满。希望阅读此文的你是干干净净的。
+2、选择WebView作为第一篇技术文章的原因，是因为网络上众多对于第二代webview引擎的介绍不尽人意，且关于JS交互极为模糊，做事不该是做完整吗？倘若你想琢磨，可在源码中一窥究竟。
+3、如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。
+4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)      [GSWebView文档](https://github.com/xorshine/GSWebView)
+5、阿弥陀佛......
 </small>
 ***
 ### 1.为何要从UIWebView更新到WKWebView？
+你真的以为平白无故的废弃UIWebView？WKWebView真有那么好？
 ######  性能测试：
 |           	  | UIWebView              | WKWebView                 |    备注               |
 |:---------------:|:----------------------:|:-------------------------:|:--------------------:|
@@ -13,13 +19,13 @@
 | FPS	 		  | 无明显差异            |    无明显差异               |  Instruments (core animation) |
 | 测试次数	 	  | 2                      |    2                      |———|
 
-单<font size=4>内存占用</font>这一点考虑，使用WKWebView便是明智的选择。
 ***
-#### 2.如UIWebView一样使用WKWebView，用熟悉的API开发
-* GSWebView被设计成UIWebView相同的样式，意在降低开发者的使用难度。
-* 引入WebKit与JavaScriptCore库，即刻出发，开始使用GSWebView。
+#### 2.鱼龙混杂的年代，还能像如UIWebView一样使用GSWebView吗？当然可以
+* 当无数的类堆积的时候，到底是OOP还是POP，当你看到WKWebView时，GSWebView才会成为你的真爱，WKWebView的设计......哎，但性能好才是真的好！
+* GSWebView并非只是集成了UIWebView和WKWebView,它被设计成与UIWebView几乎相似，意在降低开发者的使用难度。
+* 引入WebKit与JavaScriptCore库，就可开始使用GSWebView。
 
-##### 使用介绍：同样的款式如何打造不一样的内涵？
+##### 使用介绍：同样都是WebView，同样的款式，GSWebView如何打造不一样的内涵与代码体验？
  
 熟悉的属性、方法
 ```objective-c
@@ -31,6 +37,7 @@
 - (void)stopLoading;
 - (void)goBack;
 - (void)goForward;
+//......and so on
 ```
 
 形神皆似的协议方法
@@ -42,8 +49,10 @@
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error;  
 ```
 
-JS交互重点
-GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebViewDelegate定义了加载状态，GSWebViewJavaScript则只定义了JS交互。
+#### 3.GSWebView的JavaScript交互
+* GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebViewDelegate定义了加载状态，GSWebViewJavaScript则只定义了JS交互。
+* 当你把方法名就这么一传，连参数都不要，回调自然完成，真自然，丝滑般自然......
+
 ```objective-c
 #prama mark - GSWebViewJavaScript
  /**
@@ -59,8 +68,7 @@ GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebVie
      {
         return @[@"getCurrentUserId"];
      }
-     //当JS调用一个'- (void)getCurrentUserName:(NSString *)name'的OC方法时，参数name由JS传来，
-     //那么在实现该OC方法时，只需要正确知道参数类型或基本结构，你也可以写为id类型做普适，在方法内部做转换。
+ 
      - (void)getCurrentUserId:(NSString *)Id
      {
         NSLong@(@"JS调用到OC%@",Id);
@@ -69,15 +77,13 @@ GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebVie
 - (NSArray<NSString *>*)gswebViewRegisterObjCMethodNameForJavaScriptInteraction;
 
 ```
-* * *
-#### 3.服务端JavaScript源码必须的改动
+ 
 * 改动并非是为了增加复杂度，而是GSWebView内部的WKWebView必须通过Apple.Inc指定的方法  
 
 > Adding a scriptMessageHandler adds a function window.webkit.messageHandlers.<name>.postMessage(<messageBody>) for all frames.
 
-举例说明：
-JS中有一个getConsultationInfo(id)方法,客户端获取到id实现该方法，这是UIWebView时代
-但是在GSWebView中，必须这样:
+EXAMPLE：
+JS调用客户端getConsultationInfo:方法,客户端获取到id实现该方法，苹果🍎要求必须这样做:
 ```javascript
 //获取客户端iOS版本
 var version = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/);  
@@ -89,8 +95,9 @@ if(version >= 7.0 && version < 8.0){
 	window.webkit.messageHandlers.getConsultationInfo.postMessage(id)
 } 
 ```
+这不是贫僧的错，要怪就怪🍎......
 * * * 
-#### 4.提醒与注意事项
+#### 4.注意事项
 如果之前使用了UIWebView，如今使用GSWebView，在服务端对JS源码做出改动后，必须要考虑客户端老版本的兼容情况。当改动服务端的JS代码，势必导致老版本中的UIWebView交互失效。在下有个建议：
 当GSWebView加载成功，我们调用服务端预先写好的方法 function shouldUseLatestWebView(isBool);
 ```objective-c
@@ -122,6 +129,7 @@ if(isBool == "0" || isBool == ""){
 } 
 ```
 如此一来，就可以做到老版本的兼容。
-
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/cn/">知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议</a>进行许可。
+ 
+![](https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png)
+本作品采用采用[知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议进行许可](http://creativecommons.org/licenses/by-nc-nd/3.0/cn/)
 * * *
