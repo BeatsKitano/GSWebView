@@ -2,7 +2,7 @@
 1、在阅读过无数关于WebView的文章后，才有此文的出现。某种意义上，此文的初衷并非技术分享，而是对抄袭的不满。希望阅读此文的你是干干净净的。</br>
 2、选择WebView作为第一篇技术文章的原因，是因为网络上众多对于第二代webview引擎的介绍不尽人意，且关于JS交互极为模糊，做事不该是做完整吗？倘若你想琢磨，可在源码中一窥究竟。</br>
 3、如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。</br>
-4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)      [GSWebView文档](https://github.com/xorshine/GSWebView)</br>
+4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)</br>
 5、阿弥陀佛......
 </small>
 ***
