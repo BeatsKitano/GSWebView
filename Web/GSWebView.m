@@ -112,11 +112,9 @@ static long const kGSJSContextKey  = 1000;
     if (self = [super initWithFrame:frame]) {
         _pointers = [NSPointerArray weakObjectsPointerArray];
         [_pointers addPointer:(__bridge void * _Nullable)(performer)];
-        if ([UIDevice currentDevice].systemVersion.doubleValue >= 8.0) {
+        if ([UIDevice currentDevice].systemVersion.doubleValue >= 8.0)
             [self configureWKWebViewWithFrame:frame];
-        }else{
-            [self configureUIWebViewWithFrame:frame];
-        }
+        [self configureUIWebViewWithFrame:frame]; 
     }
     return self;
 }
@@ -230,7 +228,6 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
              if ([jsValue hasProperty:name]) {
                  strongSelf.jsContext[name] = ^(id body){
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         if (weakSelf) return ;
                          [strongSelf excuteJavaScriptWithMethodName:name parameter:body];
                      });
                  };
@@ -314,8 +311,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     if (self.delegate && [self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
         __weak typeof(self) weakSelf = self;
         [[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
-         ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
-             if (!weakSelf) return ;
+         ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) { 
              __strong typeof(weakSelf) strongSelf = weakSelf;
              [webView.configuration.userContentController removeScriptMessageHandlerForName:name];
              [webView.configuration.userContentController addScriptMessageHandler:strongSelf name:name];
