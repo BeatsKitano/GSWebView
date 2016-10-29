@@ -1,8 +1,8 @@
 <small>
-1、在阅读过无数关于WebView的文章后，才有此文的出现。某种意义上，此文的初衷并非技术分享，而是对抄袭的不满。希望阅读此文的你是干干净净的。
-2、选择WebView作为第一篇技术文章的原因，是因为网络上众多对于第二代webview引擎的介绍不尽人意，且关于JS交互极为模糊，做事不该是做完整吗？倘若你想琢磨，可在源码中一窥究竟。
-3、如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。
-4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)      [GSWebView文档](https://github.com/xorshine/GSWebView)
+1、在阅读过无数关于WebView的文章后，才有此文的出现。某种意义上，此文的初衷并非技术分享，而是对抄袭的不满。希望阅读此文的你是干干净净的。</br>
+2、选择WebView作为第一篇技术文章的原因，是因为网络上众多对于第二代webview引擎的介绍不尽人意，且关于JS交互极为模糊，做事不该是做完整吗？倘若你想琢磨，可在源码中一窥究竟。</br>
+3、如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。</br>
+4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)      [GSWebView文档](https://github.com/xorshine/GSWebView)</br>
 5、阿弥陀佛......
 </small>
 ***
@@ -129,6 +129,9 @@ if(isBool == "0" || isBool == ""){
 } 
 ```
 如此一来，就可以做到老版本的兼容。
+
+#### 5.不要吝惜你的建议
+像泡利一样批评GSWebView吧！谢谢。
  
 ![](https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png)
 本作品采用采用[知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议进行许可](http://creativecommons.org/licenses/by-nc-nd/3.0/cn/)
