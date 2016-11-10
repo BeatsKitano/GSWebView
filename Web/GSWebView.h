@@ -151,12 +151,14 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
 /**
  *  Customize the alert box title
  */
-@property (nullable, nonatomic, copy) NSString * customAlertTitle;  //当拦截到JS中的alter方法，自定义弹出框的标题
+@property (nullable, nonatomic, copy) NSString * pageAlertTitle;
+//当拦截到JS中的alter方法，自定义弹出框的标题
 
 /**
  *  Customize the confirm box title
  */
-@property (nullable, nonatomic, copy) NSString * customConfirmTitle; //当拦截到JS中的confirm方法，自定义弹出框的标题
+@property (nullable, nonatomic, copy) NSString * pageConfirmTitle;
+//当拦截到JS中的confirm方法，自定义弹出框的标题
 
 /**
  *  An estimate of what fraction of the current navigation has been completed.
@@ -185,7 +187,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  open source.                                                               *
  *  If you find a better way, please tell me, thank you for understanding.     *
  
- *******************************************************************************
+ ***********************************  SORRY  ***********************************
  */
 @property (nonatomic) GSDataDetectorTypes dataDetectorTypes;
 
@@ -239,17 +241,6 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  Navigates to the forward item in the back-forward list.
  */
 - (void)goForward;
-
-@end
-
-#pragma mark - CleanCache
-
-@interface GSWebView (CleanCache)
-
-/**
- *  clear all caches for webview
- */
-+ (void)removeAllGSWebViewCache;
 
 @end
 

@@ -224,14 +224,11 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
         [[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
          ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
              __strong typeof(weakSelf) strongSelf = weakSelf;
-             JSValue *jsValue = [strongSelf.jsContext globalObject];
-             if ([jsValue hasProperty:name]) {
-                 strongSelf.jsContext[name] = ^(id body){
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         [strongSelf excuteJavaScriptWithMethodName:name parameter:body];
-                     });
-                 };
-             }
+             strongSelf.jsContext[name] = ^(id body){
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [strongSelf excuteJavaScriptWithMethodName:name parameter:body];
+                 });
+             };
          }];
     }
     if ([self.delegate respondsToSelector:@selector(gswebViewDidFinishLoad:)]) {
@@ -259,7 +256,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 {
     UIViewController * currentVC = [self getTopViewController];
     if (currentVC) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customAlertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.pageAlertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             completionHandler();
         }]];
@@ -269,7 +266,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.customConfirmTitle message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.pageConfirmTitle message:message preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         completionHandler(YES);
     }]];
@@ -427,18 +424,7 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 }
 
 @end
-
-#pragma mark - CleanCache
-
-@implementation GSWebView (CleanCache)
-
-+ (void)removeAllGSWebViewCache
-{
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
  
-@end
-
 #pragma mark - GSPrivateMethod
 
 @implementation GSWebView (GSPrivateMethod)
