@@ -1,10 +1,4 @@
-<small>
-1、在阅读过无数关于WebView的文章后，才有此文的出现。某种意义上，此文的初衷并非技术分享，而是对抄袭的不满。希望阅读此文的你是干干净净的。</br>
-2、选择WebView作为第一篇技术文章的原因，是因为网络上众多对于第二代webview引擎的介绍不尽人意，且关于JS交互极为模糊，做事不该是做完整吗？倘若你想琢磨，可在源码中一窥究竟。</br>
-3、如果你有更加高明的思路，请Email：xorshine@icloud.com，或者在github上说明。</br>
-4、[GSWebView下载地址](https://github.com/xorshine/GSWebView.git)</br>
-5、阿弥陀佛......
-</small>
+ 
 ***
 ### 1.为何要从UIWebView更新到WKWebView？
 你真的以为平白无故的废弃UIWebView？WKWebView真有那么好？
@@ -20,7 +14,9 @@
 | 测试次数	 	  | 2                      |    2                      |———|
 
 ***
-#### 2.鱼龙混杂的年代，还能像如UIWebView一样使用GSWebView吗？当然可以
+#### 2.还能像如UIWebView一样使用GSWebView吗？
+当然可以.
+
 * 当无数的类堆积的时候，到底是OOP还是POP，当你看到WKWebView时，GSWebView才会成为你的真爱，WKWebView的设计......哎，但性能好才是真的好！
 * GSWebView并非只是集成了UIWebView和WKWebView,它被设计成与UIWebView几乎相似，意在降低开发者的使用难度。
 * 引入WebKit与JavaScriptCore库，就可开始使用GSWebView。
@@ -37,7 +33,7 @@
 - (void)stopLoading;
 - (void)goBack;
 - (void)goForward;
-//......and so on
+//......
 ```
 
 形神皆似的协议方法
@@ -128,10 +124,7 @@ if(isBool == "0" || isBool == ""){
  	window.webkit.messageHandlers.getConsultationInfo.postMessage(id);
 } 
 ```
-如此一来，就可以做到老版本的兼容。
-
-#### 5.不要吝惜你的建议
-像泡利一样批评GSWebView吧！谢谢。
+如此一来，就可以做到老版本的兼容。 
  
 ![](https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png)
 本作品采用采用[知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议进行许可](http://creativecommons.org/licenses/by-nc-nd/3.0/cn/)
