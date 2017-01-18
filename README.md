@@ -1,5 +1,3 @@
- 
-***
 ### 1.为何要从UIWebView更新到WKWebView？
 你真的以为平白无故的废弃UIWebView？WKWebView真有那么好？
 ######  性能测试：
@@ -44,7 +42,7 @@
 - (void)gswebViewDidFinishLoad:(GSWebView *)webView;
 - (void)gswebView:(GSWebView *)webView didFailLoadWithError:(NSError *)error;  
 ```
-
+***
 #### 3.GSWebView的JavaScript交互
 * GSWebView定义了两套协议GSWebViewDelegate和GSWebViewJavaScript，GSWebViewDelegate定义了加载状态，GSWebViewJavaScript则只定义了JS交互。
 * 当你把方法名就这么一传，连参数都不要，回调自然完成，真自然，丝滑般自然......
