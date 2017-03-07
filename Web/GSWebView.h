@@ -167,7 +167,7 @@ NS_CLASS_AVAILABLE(10_10, 7_0)
  *  potential subresources. After a navigation completes, the value remains at 1.0
  *  until a new navigation starts, at which point it is reset to 0.0.
  */
-@property (nonatomic, readonly) double estimatedProgress NS_AVAILABLE_IOS(8_0); //8.0才支持获取进度,8.0之下版本可以根据回调模拟虚假进度
+@property (nonatomic, readonly) double estimatedProgress NS_AVAILABLE_IOS(9_0); //9.0才支持获取进度,9.0之下版本可以根据回调模拟虚假进度
 
 /**
  *  The scroll view associated with the web view.

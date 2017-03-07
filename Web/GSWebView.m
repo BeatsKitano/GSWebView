@@ -22,7 +22,7 @@
 #import "GSWebView.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <objc/runtime.h>
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_9_0
 #import <WebKit/WebKit.h>
 #endif
 
@@ -57,9 +57,7 @@ _Pragma("clang diagnostic pop")
 
 @end
 
-/**********************************************************************************************************/
-
-@interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate>
+@interface GSWebView ()<WKUIDelegate,WKNavigationDelegate,WKScriptMessageHandler,UIWebViewDelegate,NSURLConnectionDelegate,NSURLConnectionDataDelegate>
 
 @property (nonatomic) BOOL canGoBack;
 @property (nonatomic) BOOL canGoForward;
@@ -77,6 +75,9 @@ _Pragma("clang diagnostic pop")
 {
     NSPointerArray * _pointers;
     __strong UIView * _webView;
+    
+    NSURLConnection *_urlConnection;
+    BOOL _authenticated;
 }
 
 - (void)dealloc
@@ -112,9 +113,11 @@ static long const kGSJSContextKey  = 1000;
     if (self = [super initWithFrame:frame]) {
         _pointers = [NSPointerArray weakObjectsPointerArray];
         [_pointers addPointer:(__bridge void * _Nullable)(performer)];
-        if ([UIDevice currentDevice].systemVersion.doubleValue >= 8.0)
+        if ([UIDevice currentDevice].systemVersion.doubleValue >= 9.0){
             [self configureWKWebViewWithFrame:frame];
-        [self configureUIWebViewWithFrame:frame]; 
+        }else{
+            [self configureUIWebViewWithFrame:frame];
+        }
     }
     return self;
 }
@@ -166,12 +169,46 @@ static long const kGSJSContextKey  = 1000;
     }
 }
 
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    if ([challenge previousFailureCount] == 0)
+    {
+        _authenticated = YES;
+        
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+    }
+    else
+    {
+        [[challenge sender] cancelAuthenticationChallenge:challenge];
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    _authenticated = YES;
+    [(UIWebView *)_webView loadRequest:_request];
+    [_urlConnection cancel];
+}
+
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
+{
+    return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+}
+
+
 /***********************************************************************************************************************/
 
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    if (!_authenticated) {
+        _authenticated = NO;
+        _urlConnection = [[NSURLConnection alloc] initWithRequest:_request delegate:self];
+        [_urlConnection start];
+    }
+    
     if ([self.delegate respondsToSelector:@selector(gswebView:shouldStartLoadWithRequest:navigationType:)]) {
         return [self.delegate gswebView:self shouldStartLoadWithRequest:request navigationType:(GSWebViewNavigationType)navigationType];
     }
@@ -187,18 +224,6 @@ static long const kGSJSContextKey  = 1000;
 
 static NSString * const kJavaScriptContext = @"documentView.webView.mainFrame.javaScriptContext";
 static NSString * const kDocumentTitle = @"document.title";
-
-static NSString * const kWebKitCacheModelPreferenceKey = @"WebKitCacheModelPreferenceKey";
-static NSString * const kWebKitDiskImageCacheEnabled = @"WebKitDiskImageCacheEnabled";
-static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOfflineWebApplicationCacheEnabled";
-
-- (void)cleanWebCacheValues
-{
-    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kWebKitCacheModelPreferenceKey];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kWebKitDiskImageCacheEnabled];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kWebKitOfflineWebApplicationCacheEnabled];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
 
 - (void)generateTitle
 {
@@ -217,7 +242,6 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 {
     [self generateTitle];
     [self bindingCtxAndValue];
-    [self cleanWebCacheValues];
     
     if([self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]){
         __weak typeof(self) weakSelf = self;
@@ -248,9 +272,23 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
     return ((WKWebView *)_webView).estimatedProgress;
 }
 
-/************************************************************************************************************************/
-
 #pragma mark - WKWebView
+
+//该方法在iOS 8系统下不能调用
+- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        if ([challenge previousFailureCount] == 0)
+        {
+            NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        } else {
+            completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        }
+    } else {
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    }
+}
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
@@ -276,11 +314,13 @@ static NSString * const kWebKitOfflineWebApplicationCacheEnabled = @"WebKitOffli
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
-{
+{  
     BOOL isNavigator = YES;
-    if ([self.delegate respondsToSelector:@selector(gswebView:shouldStartLoadWithRequest:navigationType:)]) {
+    if ([self.delegate respondsToSelector:@selector(gswebView:shouldStartLoadWithRequest:navigationType:)])
+    {
         isNavigator = [self.delegate gswebView:self shouldStartLoadWithRequest:navigationAction.request navigationType:(GSWebViewNavigationType)(navigationAction.navigationType < 0? navigationAction.navigationType : 5)];
     }
+    
     if (!isNavigator) {
         decisionHandler(WKNavigationActionPolicyCancel);
     }else{
@@ -434,23 +474,26 @@ typedef void (*GSFunctionPointNoParam)(id, SEL);
 
 - (void)excuteJavaScriptWithMethodName:(NSString *)name parameter:(id)param
 {
-    if (self.performer) {
-        SEL selector;
-        if ([param isKindOfClass:[NSString class]] && [param isEqualToString:@""])
-            selector = NSSelectorFromString(name);
+    if (!self.performer) return;
+    
+    SEL selector;
+    if ([param isKindOfClass:[NSString class]] && [param isEqualToString:@""])
+        selector = NSSelectorFromString(name);
+    else
+        selector = NSSelectorFromString([name stringByAppendingString:@":"]);
+    
+    if ([self.performer respondsToSelector:selector])
+    {
+        IMP imp = [self.performer methodForSelector:selector];
+        if (param)
+        {
+            GSFunctionPointWithParam f = (void *)imp;
+            f(self.performer, selector,param);
+        }
         else
-            selector = NSSelectorFromString([name stringByAppendingString:@":"]);
-        
-        if ([self.performer respondsToSelector:selector]){
-            IMP imp = [self.performer methodForSelector:selector];
-            if (param){
-                GSFunctionPointWithParam f = (void *)imp;
-                f(self.performer, selector,param);
-            }
-            else{
-                GSFunctionPointNoParam f = (void *)imp;
-                f(self.performer, selector);
-            }
+        {
+            GSFunctionPointNoParam f = (void *)imp;
+            f(self.performer, selector);
         }
     }
 }

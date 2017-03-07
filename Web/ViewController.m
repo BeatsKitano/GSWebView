@@ -15,7 +15,7 @@
 
 @implementation ViewController
 
-#define ADDRESS @"http://t1.easylinking.net:10004/elinkWaiter/consultation/consultationAppIndex.do?userId=131812"
+#define ADDRESS @"https://xe.easylinking.net:443/elinkWaiter/consultation/consultationAppIndex.do?userId=131812"
   
 - (void)dealloc
 {
@@ -93,7 +93,7 @@
 {
     NSLog(@"JS传来参数:%@",param[@"id"]);
     
-    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"http://t1.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131812",param[@"id"]]];
+    NSURL * url = [NSURL URLWithString: [NSString stringWithFormat:@"https://xe.easylinking.net:10004/elinkWaiter/consultation/getConsultationInfo.do?consultationId=%@&userId=131812",param[@"id"]]];
     NSURLRequest * req = [NSURLRequest requestWithURL:url]; 
     [_webView loadRequest:req];
 }
