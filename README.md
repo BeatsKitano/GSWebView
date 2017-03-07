@@ -1,10 +1,9 @@
 ### 1.背景
-WKWebView 是苹果在iOS 8中引入的新组件，目的是提供一个现代的支持最新Webkit功能的网页浏览控件，摆脱过去 UIWebView的老、旧、笨，特别是内存占用量巨大的问题。它使用与Safari中一样的Nitro JavaScript引擎，大大提高了页面js执行速度。
+
+   WKWebView 是苹果在iOS 8中引入的新组件，目的是提供一个现代的支持最新Webkit功能的网页浏览控件，摆脱过去 UIWebView的老、旧、笨，特别是内存占用量巨大的问题。它使用与Safari中一样的Nitro JavaScript引擎，大大提高了页面js执行速度。
 
 ***
-### 2.使用指南 
-
-### 2.使用指南
+### 2.使用指南  
 * GSWebView的使用被设计成与UIWebView几乎相似，意在降低开发者的使用难度。
 * 引入WebKit与JavaScriptCore库，就可开始使用GSWebView。 
  
@@ -112,8 +111,10 @@ if(isBool == "0" || isBool == ""){
 如此一来，就可以做到老版本的兼容。 
 
 ### 5.HTTPs支持
-GSWebView已经在最后一个版本中支持GSWebViewHTTPs。
+  
+  GSWebView已经在最后一个版本中支持GSWebViewHTTPs。
  
+ * * *
 ![](https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png)
 本作品采用采用[知识共享署名-非商业性使用-禁止演绎 3.0 中国大陆许可协议进行许可](http://creativecommons.org/licenses/by-nc-nd/3.0/cn/)
 * * *
