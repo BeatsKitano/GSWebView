@@ -112,7 +112,7 @@ if(isBool == "0" || isBool == ""){
 
 ### 5.HTTPs支持
   
-  GSWebView已经在最后一个版本中支持GSWebViewHTTPs。
+  GSWebView已经在最后一个版本中支持HTTPs。
  
  * * *
 ![](https://i.creativecommons.org/l/by-nc-nd/3.0/cn/88x31.png)
