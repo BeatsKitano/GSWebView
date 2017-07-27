@@ -4,14 +4,8 @@ Pod::Spec.new do |s|
 
 
   s.name         = "GSWebView"
-  s.version      = "1.0"
-  s.summary      = "GSWebView是一个API实现两代WebView的JS交互，快速轻量，与UIWebView的使用方式极为相似"
-
-  # This description is used to generate tags and improve search results.
-  #   * Think: What does it do? Why did you write it? What is the focus?
-  #   * Try to keep it short, snappy and to the point.
-  #   * Write the description between the DESC delimiters below.
-  #   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.version      = "1.0.2"
+  s.summary      = "GSWebView is a high performance webb view"
   s.description  = "GSWebView是一个API实现两代WebView的JS交互，快速轻量，与UIWebView的使用方式极为相似"
 
   s.homepage     = "https://github.com/xorshine/GSWebView"
@@ -20,9 +14,9 @@ Pod::Spec.new do |s|
 
   s.author             = { "K" => "xorshine@icloud.com" }
 
-  s.platform     = :iOS, "7.0"
+  s.ios.deployment_target = "7.0"
 
-  s.source       = { :git => "https://github.com/xorshine/GSWebView.git", :tag => "1.0.1}" }
+  s.source       = { :git => "https://github.com/xorshine/GSWebView.git", :tag => "1.0.2}" }
 
   s.source_files  = "GSWebView", "GSWebView/**/*.{h,m}"
 
