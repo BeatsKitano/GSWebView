@@ -10,13 +10,13 @@ Pod::Spec.new do |s|
 
   s.homepage     = "https://github.com/xorshine/GSWebView"
 
-  s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+#s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
 
   s.author             = { "K" => "xorshine@icloud.com" }
 
   s.ios.deployment_target = "7.0"
 
-  s.source       = { :git => "https://github.com/xorshine/GSWebView.git", :tag => "1.0.2}" }
+  s.source       = { :git => "https://github.com/xorshine/GSWebView.git", :tag => "1.0.2" }
 
   s.source_files  = "GSWebView", "GSWebView/**/*.{h,m}"
 
