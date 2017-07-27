@@ -1,3 +1,19 @@
+#### Podfile
+
+To integrate GSWebView into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+target 'TargetName' do
+pod 'GSWebView'
+end
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
 ### 1.背景
 
    WKWebView 是苹果在iOS 8中引入的新组件，目的是提供一个现代的支持最新Webkit功能的网页浏览控件，摆脱过去 UIWebView的老、旧、笨，特别是内存占用量巨大的问题。它使用与Safari中一样的Nitro JavaScript引擎，大大提高了页面js执行速度。
