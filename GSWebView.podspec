@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/xorshine/GSWebView.git", :tag => "1.0.2" }
 
-  s.source_files  = "GSWebView", "GSWebView/**/*.{h,m}"
+  s.source_files  = "KWebView/GSWebView.{h,m}"
 
   s.frameworks = "WebKit", "JavaScriptCore"
 
