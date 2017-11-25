@@ -62,6 +62,8 @@ _Pragma("clang diagnostic pop")
 @property (nonatomic) BOOL canGoBack;
 @property (nonatomic) BOOL canGoForward;
 
+@property (strong, nonatomic) UIView * webView;
+
 @end
 
 @interface GSWebView (GSPrivateMethod)
@@ -74,7 +76,6 @@ _Pragma("clang diagnostic pop")
 @implementation GSWebView
 {
     NSPointerArray * _pointers;
-    __strong UIView * _webView;
     
     NSURLConnection *_urlConnection;
     BOOL _authenticated;
@@ -87,7 +88,17 @@ _Pragma("clang diagnostic pop")
         [((UIWebView *)_webView) loadHTMLString:@"" baseURL:nil];
         [((UIWebView *)_webView) stopLoading];
         [_webView removeFromSuperview];
-    }
+	}else{
+		if (self.delegate && [self.script respondsToSelector:@selector(gswebViewRegisterObjCMethodNameForJavaScriptInteraction)]) {
+			__weak typeof(self) weakSelf = self;
+			[[self.script gswebViewRegisterObjCMethodNameForJavaScriptInteraction] enumerateObjectsUsingBlock:
+			 ^(NSString * _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+				 __strong typeof(weakSelf) strongSelf = weakSelf;
+				 WKWebView * wk = (WKWebView *)strongSelf.webView;
+				 [(wk.configuration).userContentController removeScriptMessageHandlerForName:name];
+			 }];
+		}
+	}
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
