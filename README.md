@@ -1,3 +1,5 @@
+###还在支持iOS7吗？连微信都iOS8！！！
+
 #### Podfile
 
 To integrate GSWebView into your Xcode project using CocoaPods, specify it in your `Podfile`:
