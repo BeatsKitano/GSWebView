@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "GSWebView"
-  s.version      = "1.0.2"
+  s.version      = "1.1.0"
   s.summary      = "GSWebView is a high performance webb view"
   s.description  = "GSWebView是一个API实现两代WebView的JS交互，快速轻量，与UIWebView的使用方式极为相似"
 

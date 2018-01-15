@@ -136,8 +136,10 @@ static long const kGSJSContextKey  = 1000;
 - (void)loadRequest:(NSURLRequest *)request
 {
     _request = request;
-    if ([_webView isKindOfClass:[WKWebView class]])
-        [(WKWebView *)_webView loadRequest:request];
+	if ([_webView isKindOfClass:[WKWebView class]]){
+		[(WKWebView *)_webView loadRequest:request];
+		return;
+	}
     [(UIWebView *)_webView loadRequest:request];
 }
 
